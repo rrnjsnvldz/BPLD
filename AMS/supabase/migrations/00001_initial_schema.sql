@@ -96,6 +96,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON public.audit_log(created_
 CREATE INDEX IF NOT EXISTS idx_audit_log_table_name ON public.audit_log(table_name);
 CREATE INDEX IF NOT EXISTS idx_audit_log_user_id ON public.audit_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_record_id ON public.audit_log(record_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_record ON public.audit_log(table_name, record_id);
 
 -- ============================================================================
 -- OUTBOX (Event-Driven Architecture)
@@ -120,6 +121,7 @@ COMMENT ON COLUMN public.outbox.payload IS 'Event data as JSON';
 COMMENT ON COLUMN public.outbox.published_at IS 'When the event was published (NULL = pending)';
 
 CREATE INDEX IF NOT EXISTS idx_outbox_published_at ON public.outbox(published_at) WHERE published_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_outbox_event_type ON public.outbox(event_type) WHERE published_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_outbox_aggregate ON public.outbox(aggregate_type, aggregate_id);
 CREATE INDEX IF NOT EXISTS idx_outbox_created_at ON public.outbox(created_at DESC);
 
@@ -134,10 +136,14 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.outbox ENABLE ROW LEVEL SECURITY;
 
--- User Profiles: users can view and update their own profile
+-- User Profiles: users can view, insert, and update their own profile
 CREATE POLICY user_profiles_select_own ON public.user_profiles
   FOR SELECT
   USING (auth.uid() = id);
+
+CREATE POLICY user_profiles_insert_own ON public.user_profiles
+  FOR INSERT
+  WITH CHECK (auth.uid() = id);
 
 CREATE POLICY user_profiles_update_own ON public.user_profiles
   FOR UPDATE

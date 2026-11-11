@@ -14,7 +14,13 @@ export async function signIn(
 ): Promise<ApiResponse<null>> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { data: null, error: error.message, status: 401 };
+  if (error) {
+    return { 
+      data: null, 
+      error: 'Invalid email or password. Please try again.', 
+      status: 401 
+    };
+  }
   revalidatePath('/', 'layout');
   redirect('/');
 }
@@ -25,12 +31,38 @@ export async function signUp(
   fullName: string
 ): Promise<ApiResponse<null>> {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { full_name: fullName } },
   });
-  if (error) return { data: null, error: error.message, status: 400 };
+  
+  if (authError) {
+    return { 
+      data: null, 
+      error: 'Unable to create account. Please try again.', 
+      status: 400 
+    };
+  }
+
+  // Create user profile row
+  if (authData.user) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: profileError } = await (supabase as any)
+      .from('user_profiles')
+      .insert([{
+        id: authData.user.id,
+        full_name: fullName,
+        timezone: 'Asia/Manila',
+        locale: 'en-PH',
+      }]);
+
+    if (profileError) {
+      // Profile creation failed but auth succeeded - log this but don't fail signup
+      console.error('Failed to create user profile:', profileError);
+    }
+  }
+
   return { data: null, error: null, status: 200 };
 }
 
@@ -48,6 +80,12 @@ export async function resetPassword(
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/auth/update-password`,
   });
-  if (error) return { data: null, error: error.message, status: 400 };
+  if (error) {
+    return { 
+      data: null, 
+      error: 'Unable to send password reset email. Please check the email address and try again.', 
+      status: 400 
+    };
+  }
   return { data: null, error: null, status: 200 };
 }

@@ -46,7 +46,27 @@ export async function hasRole(roleId: RoleId): Promise<boolean> {
 
 /**
  * Asserts the user is authenticated.
- * Redirects to /login if not. Use at the top of protected server components.
+ * Redirects to /login if not.
+ * 
+ * IMPORTANT: Call this FIRST in your Server Component, before any database queries
+ * or data fetching. Calling it after queries will still execute those queries before
+ * the redirect happens, which could leak data in logs or create timing side-channels.
+ * 
+ * @example
+ * // ✓ Correct — auth check first
+ * export default async function ProtectedPage() {
+ *   const user = await requireAuth();
+ *   const data = await fetchSensitiveData();
+ *   return <div>...</div>;
+ * }
+ * 
+ * @example
+ * // ✗ Wrong — query executes before auth check
+ * export default async function ProtectedPage() {
+ *   const data = await fetchSensitiveData(); // ← runs even if unauthenticated
+ *   const user = await requireAuth();
+ *   return <div>...</div>;
+ * }
  */
 export async function requireAuth(): Promise<AuthUser> {
   const user = await getUser();

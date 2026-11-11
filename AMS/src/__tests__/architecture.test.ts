@@ -2,6 +2,9 @@
  * Architectural boundary tests.
  * Verify module isolation rules from ADR-002 are not violated.
  * Run with: npx vitest run src/__tests__/architecture.test.ts
+ * 
+ * Note: This test only catches static imports in TypeScript/TSX files.
+ * Dynamic imports (import()) are not detected by the regex pattern.
  */
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'fs';

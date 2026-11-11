@@ -7,66 +7,81 @@
 
 ## Current State
 
-**Phase:** Phase 0  
-**Module:** N/A (documentation phase)  
-**Current Slice:** N/A  
-**Last Gate Passed:** None  
-**Next Gate:** Gate 0 (Phase 0 approval)
+**Phase:** ✅ Phase 0 Complete → Starting Phase 1  
+**Module:** Platform Kernel + UI Kit (in progress)  
+**Current Slice:** Initial setup  
+**Last Gate Passed:** ✅ Gate 0 (2026-11-10)  
+**Next Gate:** Gate M1 (Module K + A complete)
 
 ---
 
 ## Progress Summary
 
 ### Overall
-- **Phase 0:** In Progress (85% estimated — 7 docs running in workflow, wireframes + PR template remaining)
+- **Phase 0:** ✅ Complete (Gate 0 approved 2026-11-10)
+- **Phase 1:** Starting now (Platform Kernel + UI Kit + Module K + Module A)
 - **Modules Complete:** 0 of 11
 - **Total Test Coverage:** N/A (no code yet)
 
 ### Current Sprint Focus
-Creating Phase 0 deliverables for Gate 0 approval:
-- ✅ Blueprint read and analyzed
-- ✅ Master Plan core sections complete  
-- ✅ Master Checklist created
-- ✅ Open Questions document created with 21 questions + 10 assumptions
-- ✅ Decisions log initialized
-- ✅ Directory structure created
-- ✅ Module checklists (K, A-J — all 11 complete)
+**Phase 1 Kickoff — Platform Kernel + UI Kit (Week 1 of 12)**
+
+**Team:** 3 developers + AI assistance  
+**Target:** Core system (K+A+B+C+D+E) in 12 weeks  
+
+**This week:**
+- Initialize Next.js project with TypeScript
+- Set up Supabase project (database, auth, storage)
+- Configure Vercel deployment
+- Install and configure shadcn/ui component library
+- Set up Platform Kernel foundation:
+  - Supabase Auth integration
+  - RLS policies framework
+  - Outbox pattern for domain events
+  - Base database schema (users, roles, audit log, outbox)
+- Create UI Kit core components (Button, Input, Card, Table, Form basics)
+
+**Phase 0 deliverables completed:**
+- ✅ Master Plan (18,000+ words, 16 sections)
+- ✅ Master Checklist (Phases 0-7, 29 P0 tasks complete)
+- ✅ All 11 module checklists (K through J)
+- ✅ Open Questions (21 questions, 10 assumptions — critical Q-12, Q-13, Q-20, Q-21 answered)
+- ✅ Decisions log with Gate 0 approval
+- ✅ Design pack (System Plan, Screen Inventory, 4 wireframes, runbooks)
+- ✅ Security Plan
+- ✅ Data Migration Plan  
+- ✅ Contract Draft
+- ✅ ADR-001 (Technology Stack: Next.js + Supabase + Vercel)
+- ✅ ADR-002 (Architecture: Modular Monolith)
+- ✅ Repository orientation (README, CONTRIBUTING, PR template)
 - ✅ Glossary
-- ✅ README.md
-- ✅ CONTRIBUTING.md
-- ✅ Design Intake Checklist
-- ✅ Apply Design Runbook
-- ✅ Design Debt log (empty template)
-- ⏳ Design System Plan (workflow running)
-- ⏳ Screen Inventory (workflow running)
-- ⏳ Security Plan (workflow running)
-- ⏳ Data Migration Plan (workflow running)
-- ⏳ Contract Draft (workflow running)
-- ⏳ ADR-001 Technology Stack (workflow running)
-- ⏳ ADR-002 Architecture Style (workflow running)
-- ⏳ Wireframes (4 screens — to be created)
-- ⏳ PR template
-- ⏳ Gate 0 summary package
-- ⏳ Gate 0 summary package
 
 ---
 
 ## Blockers
 
 ### Critical
-- **Q-17:** Owner review session not yet scheduled — blocks Gate 0
-- **Q-21:** Team composition and timeline undefined — blocks Phase 1 planning
-- **Q-12:** Technology stack decision pending — blocks ADR-001 and tooling setup
+None — Gate 0 approved, ready to start Phase 1
 
-### Non-Critical (can proceed with Phase 0 work)
-- **Q-01 through Q-16, Q-18 through Q-20:** Various clarifications needed, documented in OPEN-QUESTIONS.md
-- **A-01 through A-10:** Assumptions awaiting confirmation
+### Deferred (to be clarified during module implementation)
+- **Q-01 through Q-11:** Business rules and process details (will clarify during Module implementation)
+- **Q-14 through Q-19:** Implementation details (will decide in Phase 1/2)
+- **A-01 through A-10:** Assumptions (will validate during implementation)
 
 ---
 
 ## Recent Activity
 
-### 2026-11-10
+### 2026-11-10 (Phase 0 Complete, Gate 0 Approved)
+
+**Gate 0 Approval:**
+- ✅ Stack selected: Next.js 14+ + React 18+ + Supabase + Vercel
+- ✅ Architecture confirmed: Modular Monolith with Next.js feature folders
+- ✅ Budget established: Free infrastructure (Supabase free + Vercel Hobby), pay-as-you-go SMS (~₱250-500/month), free email (Resend 3K/month)
+- ✅ Team confirmed: 3 developers + AI assistance
+- ✅ Timeline set: 12 weeks for core system (Modules K+A+B+C+D+E)
+
+**Phase 0 Deliverables Created:**
 - Read Blueprint end-to-end (Autoshop-Management-System-Master-Plan.md)
 - Identified 12 gaps and contradictions in Blueprint
 - Created Master Plan core (`docs/01-MASTER-PLAN.md`):

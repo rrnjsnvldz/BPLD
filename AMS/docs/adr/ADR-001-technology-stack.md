@@ -1,9 +1,10 @@
 # ADR-001: Technology Stack Selection
 
-**Status**: PENDING — awaiting Gate 0 approval `PENDING(Q-12)`  
-**Date**: 2025-01-24  
-**Deciders**: Owner, Tech Lead  
-**Reviewed by**: [to be assigned at Gate 0]
+**Status**: ✅ ACCEPTED  
+**Date Proposed**: 2025-01-24  
+**Date Decided**: 2026-11-10  
+**Deciders**: Owner  
+**Stack Selected**: Next.js + React + Supabase + Vercel
 
 ---
 
@@ -173,33 +174,137 @@ Evaluation criteria with weights:
 
 ---
 
-## Recommendation
+## Decision
 
-- **If team has PHP/Laravel experience**: Choose **Option B (Laravel + Vue)**. Best overall score, widest hosting options in PH, fastest delivery for CRUD-heavy shop management app.
-- **If team has JavaScript/TypeScript experience**: Choose **Option A (Node.js + React)**. Modern, single-language, strong ecosystem.
-- **If team has Python experience**: Option C is viable but hosting overhead is a real cost.
-- **If team is .NET-only**: Option D works but expect higher hosting costs.
+**Selected Stack: Next.js 14+ with App Router + React 18+ + Supabase + Vercel**
 
----
+### Architecture Components
 
-## Decision Required at Gate 0
+**Frontend:**
+- Next.js 14+ with App Router (server components, streaming SSR, ISR)
+- React 18+ with TypeScript
+- Tailwind CSS for styling
+- shadcn/ui component library
+- Zod for validation
+- React Hook Form for forms
 
-`PENDING(Q-12)`: Owner and Tech Lead must select one option at Gate 0. Record decision in `docs/DECISIONS.md`.
+**Backend:**
+- Next.js API Routes (server actions, route handlers)
+- Supabase Edge Functions (for complex background jobs)
+- Supabase Postgres (database)
+- Supabase Auth (authentication & authorization)
+- Supabase Storage (file uploads)
+- Supabase Realtime (live updates)
 
-Inputs needed:
-1. Tech Lead: list team's primary language skills and years of experience
-2. Owner: preferred hosting budget (monthly)
-3. Owner: preferred hosting provider (local PH provider vs. international cloud)
-4. Tech Lead: estimated project timeline with chosen stack
+**Infrastructure:**
+- Vercel (hosting, CDN, edge network)
+- Supabase Cloud (free tier → Pro as needed)
+- Vercel Postgres (optional fallback)
+- Vercel Cron Jobs (scheduled tasks)
+
+### Rationale
+
+This modern stack provides exceptional value for AMS:
+
+**1. Supabase eliminates massive Platform Kernel work:**
+- ✅ **Auth out-of-the-box**: Email/password, magic links, OAuth ready (Module K authentication ~80% done)
+- ✅ **Row Level Security (RLS)**: Database-level security enforces access control automatically
+- ✅ **Realtime subscriptions**: Live job board updates, POS synchronization, inventory changes
+- ✅ **Storage**: Document uploads, work order photos, invoice PDFs
+- ✅ **Postgres**: Full-featured relational database with triggers, functions, full-text search
+
+**2. Next.js accelerates development:**
+- Server components reduce client bundle size
+- API routes colocated with frontend code
+- Built-in image optimization
+- TypeScript end-to-end type safety
+- Excellent developer experience
+
+**3. Vercel deployment is zero-config:**
+- Git push → automatic deployment
+- Preview deployments for branches
+- Automatic HTTPS
+- Edge network (fast for Philippines users)
+- No DevOps overhead
+
+**4. Cost-effective for single-shop:**
+- Supabase free tier: 500MB database, 1GB storage, 50,000 monthly active users
+- Vercel Hobby tier: Free for non-commercial (or $20/month Pro)
+- Total monthly cost: ₱0–₱2,000 ($0–$40) until significant growth
+
+**5. Philippine context advantages:**
+- Supabase hosted in AWS Singapore (low latency to Manila)
+- PostgreSQL handles PHP currency decimal precision correctly
+- Timezone support built into Postgres
+- JSON columns for flexible statutory payroll rules
+
+### Comparison to Original Options
+
+| Feature | Next.js+Supabase | Laravel+Vue | Node+React | Django+React |
+|---------|------------------|-------------|------------|--------------|
+| Auth built-in | ✅ Supabase Auth | ✅ Laravel Auth | ❌ DIY | ✅ Django Auth |
+| Realtime | ✅ Supabase | ❌ DIY w/ Redis | ❌ DIY | ❌ DIY |
+| Hosting complexity | ✅ Git push | ⚠️ PHP host | ⚠️ VPS setup | ⚠️ VPS setup |
+| Database migrations | ✅ Supabase CLI | ✅ Laravel | ⚠️ Prisma setup | ✅ Django |
+| TypeScript E2E | ✅ Native | ❌ PHP/JS split | ✅ Native | ❌ Python/JS |
+| Admin panel | ⚠️ DIY | ✅ Laravel Nova | ❌ DIY | ✅ Django Admin |
+| Row-level security | ✅ RLS | ❌ App code | ❌ App code | ❌ App code |
+
+**Trade-off accepted**: No built-in admin panel like Laravel Nova or Django Admin. Module K Administration will require custom UI, but Supabase Auth + RLS + Next.js Server Actions make this straightforward.
 
 ---
 
 ## Consequences
 
-- The chosen stack determines the platform kernel, UI kit tooling, database migrations, testing frameworks, and CI/CD pipeline
-- Stack choice does NOT affect module specifications, data model, or business rules — these are stack-agnostic
-- If the stack must change mid-project (team change, acquisition), a Change Request (CR) is required; architecture documents will need partial updates but module specs and data model are reusable
-- All four options can implement the full AMS feature set
+### Positive
+
+1. **Massive acceleration**: Supabase Auth, RLS, Realtime, and Storage eliminate weeks of Platform Kernel work
+2. **Type safety end-to-end**: TypeScript from database (via Supabase types) → API → UI
+3. **Zero DevOps**: Vercel handles deployment, HTTPS, CDN, scaling automatically
+4. **Low cost**: Free tiers suitable for initial deployment, predictable pricing as you grow
+5. **Modern DX**: Hot reload, TypeScript, component library, great debugging tools
+6. **Security by default**: Supabase RLS enforces access control at database level (prevents many authorization bugs)
+7. **Realtime ready**: Job board live updates, POS inventory sync work out-of-the-box
+8. **Edge functions**: Supabase Edge Functions (Deno) handle background jobs that need isolation
+
+### Negative / Mitigations
+
+1. **Vendor lock-in to Supabase:**
+   - **Mitigation**: Supabase is open-source; can self-host if needed. Postgres schema is standard SQL (portable).
+   - **Exit path**: Migrate to standard Postgres + custom auth layer if Supabase discontinued.
+
+2. **No built-in admin panel (unlike Laravel Nova / Django Admin):**
+   - **Mitigation**: Module K screens must be custom-built. Use shadcn/ui data tables + forms. Supabase Studio provides database admin UI for developers.
+
+3. **Next.js Server Components learning curve:**
+   - **Mitigation**: Well-documented, large community, many tutorials. Team learns once, benefits throughout project.
+
+4. **Cold start latency on Vercel Hobby tier:**
+   - **Mitigation**: Upgrade to Vercel Pro ($20/month) if needed. Supabase API is always warm.
+
+5. **Supabase free tier limits (500MB DB, 1GB storage):**
+   - **Mitigation**: Monitor usage. Upgrade to Supabase Pro ($25/month) when approaching limits. Sufficient for single-shop launch.
+
+### Impact on Phase 1 (Platform Kernel + UI Kit)
+
+**Platform Kernel work significantly reduced:**
+
+| Original Kernel Component | Next.js + Supabase Implementation |
+|---------------------------|-----------------------------------|
+| Authentication | ✅ Supabase Auth (~2 days setup vs ~2 weeks DIY) |
+| Authorization | ✅ Supabase RLS policies (~1 week vs ~2 weeks app-level) |
+| Database layer | ✅ Supabase client + generated types (~2 days vs ~1 week ORM setup) |
+| File uploads | ✅ Supabase Storage (~2 days vs ~1 week) |
+| Background jobs | ⚠️ Vercel Cron + Supabase Edge Functions (~1 week) |
+| Logging/monitoring | ⚠️ Vercel Analytics + Supabase logs (~3 days setup) |
+| Email/SMS integration | ⚠️ Still need Twilio/SendGrid integration (~1 week) |
+
+**Estimated Platform Kernel savings: ~4–5 weeks** (from ~8 weeks → ~3–4 weeks)
+
+**UI Kit unchanged:**
+- shadcn/ui components (React/Tailwind) work perfectly with Next.js
+- Design System Plan already specifies React components
+- All 67 components from Design System Plan remain valid
 
 ---
 

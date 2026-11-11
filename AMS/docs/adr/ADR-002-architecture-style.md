@@ -1,9 +1,10 @@
 # ADR-002: Architecture Style — Modular Monolith vs. Microservices
 
-**Status**: PENDING — awaiting Gate 0 approval  `PENDING(Q-13)`  
-**Date**: 2026-11-10  
-**Deciders**: Owner, Tech Lead  
-**Reviewed by**: [to be assigned at Gate 0]
+**Status**: ✅ ACCEPTED  
+**Date Proposed**: 2026-11-10  
+**Date Decided**: 2026-11-10  
+**Deciders**: Owner  
+**Architecture Selected**: Modular Monolith (Option 1/3)
 
 ## Context
 
@@ -99,57 +100,102 @@ src/modules/
 
 This is the same as Option 1 today, with a documented upgrade path.
 
-## Decision: Modular Monolith (Option 1 / Option 3)
+## Decision: Modular Monolith (Option 1/3) — ACCEPTED
 
-**Recommendation**: Build as a Modular Monolith from day one. This fully implements the Blueprint's intent of "modular services sharing common services" while remaining practical for a small team and single-shop deployment.
+**Selected Architecture**: Build as a Modular Monolith from day one. This fully implements the Blueprint's intent of "modular services sharing common services" while remaining practical for a 3-developer team and single-shop deployment.
 
-The outbox pattern (domain events) built into the platform kernel from Phase 1 provides the extraction seam. If the business grows to 3+ branches requiring independent service scaling, individual modules can be extracted into separate services at that time — the events, contracts, and table ownership boundaries are already defined.
+**Next.js Implementation**:
+- Single Next.js application deployed on Vercel
+- Modules organized as feature folders under `app/(modules)/[module-id]/`
+- Shared Supabase Postgres database with Row Level Security (RLS)
+- Module boundaries enforced via:
+  - Next.js file-based routing (each module owns its routes)
+  - ESLint import rules (modules cannot import each other's internals)
+  - Supabase RLS policies (database-level access control per module tables)
+  - Architectural tests (verify table ownership, contract compliance)
 
-## Consequences
+**Module structure** (Next.js App Router):
+```
+app/
+  (modules)/
+    customers/        # Module A - routes, components, server actions
+    scheduling/       # Module B
+    service-orders/   # Module C
+    inventory/        # Module D
+    billing/          # Module E
+    payroll/          # Module F
+    finance/          # Module G
+    reminders/        # Module H
+    follow-up/        # Module I
+    reporting/        # Module J
+    admin/            # Module K
+  _platform/          # Shared kernel (auth, audit, notifications)
+lib/
+  modules/
+    [module-id]/
+      domain/         # Business logic
+      data/           # Supabase queries
+      types/          # TypeScript types
+      contracts.ts    # Public API exported to other modules
+supabase/
+  migrations/         # Database schema per module
+  ```
+
+**How cross-module integration works**:
+- **Synchronous**: Module C imports Module D's `contracts.ts` for parts availability check (server-side only)
+- **Asynchronous**: Module C writes domain event to `outbox` table via Supabase trigger; Module G and I subscribe via Supabase Realtime or Edge Function polling
+- **Stubs**: When Module C is built in Phase 2 and Module D is not yet built, C uses a stub implementation of D's contract. When D ships in Phase 3, replace stub with real implementation.
+
+**Deployment**: Single Next.js app on Vercel, single Supabase database, single domain.
+
+The outbox pattern (domain events) built into the platform kernel from Phase 1 provides the extraction seam. If the business grows to 3+ branches requiring independent service scaling, individual modules can be extracted into Supabase Edge Functions or separate Next.js deployments at that time — the events, contracts, and table ownership boundaries are already defined.
+
+## Consequences (Next.js + Supabase Implementation)
 
 **Positive**:
-- Simpler local development: `npm run dev` or `php artisan serve` starts the entire system
-- ACID transactions across modules: invoice posting and inventory deduction can be in one database transaction
-- Single deployment pipeline: one build, one deploy, easier rollback
-- Easier debugging: single log stream, single call stack
-- Lower hosting cost: one process, one database connection pool
-- Faster cross-module development: no network calls between modules in Phase 1–3
-- Schema migrations across modules in one migration run (no cross-service migration coordination)
+- **Simpler local development**: `npm run dev` starts the entire system (Next.js + Supabase local)
+- **ACID transactions across modules**: Invoice posting and inventory deduction can be in one Supabase transaction
+- **Single deployment pipeline**: `git push` → Vercel auto-deploy, easier rollback
+- **Easier debugging**: Single Next.js process, single Supabase log stream, single call stack
+- **Lower hosting cost**: One Vercel deployment, one Supabase database (free tiers sufficient)
+- **Faster cross-module development**: Module-to-module calls are function calls (no HTTP overhead in Phase 1–3)
+- **Schema migrations coordinated**: Supabase migrations run in order across all modules
+- **RLS security**: Database enforces access control, prevents many authorization bugs
+- **Type safety**: Supabase generates TypeScript types from schema, shared across modules
 
 **Negative / Watch Points**:
-- Module boundary discipline requires enforcement (linting rules, code review)
-- Cannot independently scale a single module (not a concern at current shop size)
-- If module boundaries are violated early, the "modular" benefit is lost — requires consistent developer discipline
-- Performance bottleneck: a slow Module J report query could affect the entire application (mitigation: read replicas or separate reporting database in Phase 6)
+- **Module boundary discipline**: Requires enforcement (ESLint rules, code review, architectural tests)
+- **Cannot independently scale a single module**: Not a concern at current shop size; future extraction to Edge Functions possible
+- **Boundary violations**: If module boundaries are violated early, the "modular" benefit is lost — requires consistent developer discipline
+- **Performance bottleneck**: A slow Module J report query could affect the entire application (mitigation: Supabase read replicas or separate reporting database in Phase 6)
+- **Vercel function limits**: Serverless functions have 10-second timeout on Hobby tier (15s on Pro). Long-running jobs must use Supabase Edge Functions or scheduled jobs.
 
 **Not affected by this decision**:
 - Module specifications, data model, business rules (all stack-agnostic)
-- API endpoint design (can expose module APIs externally if needed)
-- Security model (RBAC, audit, encryption)
+- API endpoint design (can expose module APIs externally if needed via Next.js API routes)
+- Security model (RBAC, audit, encryption — enforced by Supabase RLS)
 
 ## Module Boundary Rules (Binding)
 
-These rules are BINDING from Phase 1 and enforced by linting and code review:
+These rules are BINDING from Phase 1 and enforced by ESLint, Supabase RLS, and code review:
 
-1. A module may only import from its own files and from `_platform/`
-2. A module may call another module's public API layer, never its internals (domain, application, infrastructure)
-3. Database table names are prefixed with the module letter (e.g., `c_service_orders`, `d_items`)
-4. A table is owned by exactly one module; no other module writes to it directly
-5. Cross-module reads that cannot go through an API (e.g., reporting) use a read-only view or materialized view, never direct joins across module ownership boundaries
-6. All cross-module side effects go through domain events in the outbox table
-7. Each module's public contract is documented in `src/modules/<x>/CONTRACT.md`
-8. Violation of rules 1–4 must be approved by Tech Lead as a documented exception
+1. **Import rules**: A module may only import from its own `lib/modules/[module-id]/*` and from `lib/platform/*`. Cross-module imports must go through `contracts.ts` only.
+2. **Server-side only**: Module-to-module calls only allowed in Server Components, Server Actions, or API Routes — never in Client Components (prevents client bundle coupling).
+3. **Table ownership**: Database table names are prefixed with the module letter (e.g., `c_service_orders`, `d_items`). Each table owned by exactly one module.
+4. **RLS policies**: Supabase Row Level Security policies enforce access control per module. No module bypasses RLS to access another module's tables directly.
+5. **Cross-module reads**: Reporting (Module J) that needs cross-module data uses read-only Supabase views or materialized views, never direct joins across module ownership boundaries.
+6. **Side effects**: All cross-module side effects go through domain events in the `outbox` table, processed by Supabase Edge Functions or Realtime subscriptions.
+7. **Public contracts**: Each module's public contract is documented in `lib/modules/<module-id>/contracts.ts` with TypeScript types and JSDoc.
+8. **Exceptions**: Violation of rules 1–4 must be approved by Tech Lead as a documented exception in `docs/DECISIONS.md`.
 
-## Decision Required at Gate 0
-
-`PENDING(Q-13)`: Tech Lead must confirm architecture choice at Gate 0. Record in `docs/DECISIONS.md`.
-
-Inputs needed:
-1. Tech Lead: confirm modular monolith is acceptable, or provide technical rationale for microservices
-2. If microservices: identify which modules genuinely need independent scaling today, and confirm DevOps capacity
+**Enforcement tooling (Phase 1)**:
+- ESLint plugin: `@nx/enforce-module-boundaries` or custom rule
+- Supabase RLS policies tested in integration tests
+- Architectural tests: verify no direct table access violations
+- PR template checklist: "Does this PR violate module boundaries?"
 
 ## Links
 - Master Plan §4: `docs/01-MASTER-PLAN.md`
-- ADR-001: `docs/adr/ADR-001-technology-stack.md`
-- Open Questions: `docs/OPEN-QUESTIONS.md` (Q-13)
-- Decisions Log: `docs/DECISIONS.md`
+- ADR-001 (Technology Stack): `docs/adr/ADR-001-technology-stack.md`
+- Open Questions: `docs/OPEN-QUESTIONS.md` (Q-13 resolved)
+- Decisions Log: `docs/DECISIONS.md` (AD-002)

@@ -29,7 +29,7 @@ const eslintConfig = defineConfig([
     files: ['src/app/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
-        'warn',
+        'error',
         {
           patterns: [
             {
