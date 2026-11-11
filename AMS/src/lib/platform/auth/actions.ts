@@ -6,7 +6,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '../db/server';
-import type { ApiResponse } from '../types';
+import type { ApiResponse, Database } from '../types';
 
 export async function signIn(
   email: string,
@@ -47,15 +47,18 @@ export async function signUp(
 
   // Create user profile row
   if (authData.user) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error: profileError } = await (supabase as any)
+    // Type-safe payload matching user_profiles.Insert shape
+    type UserProfileInsert = Database['public']['Tables']['user_profiles']['Insert'];
+    const profilePayload: UserProfileInsert = {
+      id: authData.user.id,
+      full_name: fullName,
+      timezone: 'Asia/Manila',
+      locale: 'en-PH',
+    };
+    
+    const { error: profileError } = await supabase
       .from('user_profiles')
-      .insert([{
-        id: authData.user.id,
-        full_name: fullName,
-        timezone: 'Asia/Manila',
-        locale: 'en-PH',
-      }]);
+      .insert([profilePayload] as never);
 
     if (profileError) {
       // Profile creation failed but auth succeeded - log this but don't fail signup

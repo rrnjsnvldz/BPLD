@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS public.user_roles (
 );
 
 COMMENT ON TABLE public.user_roles IS 'User-to-role assignments for RBAC';
-COMMENT ON COLUMN public.user_roles.granted_by IS 'Admin who granted this role';
+COMMENT ON COLUMN public.user_roles.granted_by IS 'User who granted this role (NULL if system-granted)';
 
 CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_roles_role_id ON public.user_roles(role_id);
@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS public.audit_log (
 );
 
 COMMENT ON TABLE public.audit_log IS 'Immutable audit log for all sensitive operations';
+COMMENT ON COLUMN public.audit_log.user_id IS 'User who performed the action (NULL if system-triggered)';
 COMMENT ON COLUMN public.audit_log.action IS 'Operation type: INSERT, UPDATE, DELETE, LOGIN, LOGOUT, EXPORT';
 COMMENT ON COLUMN public.audit_log.table_name IS 'Table affected (e.g., c_service_orders, d_items)';
 COMMENT ON COLUMN public.audit_log.record_id IS 'Primary key of affected record (stringified)';
@@ -109,6 +110,7 @@ CREATE TABLE IF NOT EXISTS public.outbox (
   aggregate_id text NOT NULL,
   event_type text NOT NULL,
   payload jsonb NOT NULL DEFAULT '{}',
+  idempotency_key uuid UNIQUE,
   published_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now()
 );
@@ -118,6 +120,7 @@ COMMENT ON COLUMN public.outbox.aggregate_type IS 'Module and entity (e.g., "ser
 COMMENT ON COLUMN public.outbox.aggregate_id IS 'Entity ID that triggered the event';
 COMMENT ON COLUMN public.outbox.event_type IS 'Event name (e.g., "service_order.approved", "inventory.parts_reserved")';
 COMMENT ON COLUMN public.outbox.payload IS 'Event data as JSON';
+COMMENT ON COLUMN public.outbox.idempotency_key IS 'Unique key to prevent duplicate event insertion on transaction retry';
 COMMENT ON COLUMN public.outbox.published_at IS 'When the event was published (NULL = pending)';
 
 CREATE INDEX IF NOT EXISTS idx_outbox_published_at ON public.outbox(published_at) WHERE published_at IS NULL;
@@ -149,6 +152,17 @@ CREATE POLICY user_profiles_update_own ON public.user_profiles
   FOR UPDATE
   USING (auth.uid() = id);
 
+-- User Profiles: admins can view and manage all profiles
+CREATE POLICY user_profiles_admin_all ON public.user_profiles
+  FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.user_roles 
+      WHERE user_id = auth.uid() AND role_id = 1
+    )
+  );
+
 -- Roles: authenticated users can view all roles
 CREATE POLICY roles_select_authenticated ON public.roles
   FOR SELECT
@@ -159,6 +173,39 @@ CREATE POLICY roles_select_authenticated ON public.roles
 CREATE POLICY user_roles_select_own ON public.user_roles
   FOR SELECT
   USING (auth.uid() = user_id);
+
+-- User Roles: admins can view all role assignments
+CREATE POLICY user_roles_admin_select ON public.user_roles
+  FOR SELECT
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.user_roles 
+      WHERE user_id = auth.uid() AND role_id = 1
+    )
+  );
+
+-- User Roles: admins can assign roles
+CREATE POLICY user_roles_admin_insert ON public.user_roles
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.user_roles 
+      WHERE user_id = auth.uid() AND role_id = 1
+    )
+  );
+
+-- User Roles: admins can revoke roles
+CREATE POLICY user_roles_admin_delete ON public.user_roles
+  FOR DELETE
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.user_roles 
+      WHERE user_id = auth.uid() AND role_id = 1
+    )
+  );
 
 -- Audit Log: no direct access (service role only, reports via views/functions)
 -- No policies = service role only

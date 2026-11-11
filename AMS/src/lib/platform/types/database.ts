@@ -55,9 +55,9 @@ export type Database = {
         Update: { id?: number; user_id?: string | null; action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'EXPORT'; table_name?: string; record_id?: string | null; old_data?: Json | null; new_data?: Json | null; ip_address?: string | null; user_agent?: string | null; created_at?: string; };
       };
       outbox: {
-        Row: { id: number; aggregate_type: string; aggregate_id: string; event_type: string; payload: Json; published_at: string | null; created_at: string; };
-        Insert: { id?: number; aggregate_type: string; aggregate_id: string; event_type: string; payload?: Json; published_at?: string | null; created_at?: string; };
-        Update: { id?: number; aggregate_type?: string; aggregate_id?: string; event_type?: string; payload?: Json; published_at?: string | null; created_at?: string; };
+        Row: { id: number; aggregate_type: string; aggregate_id: string; event_type: string; payload: Json; idempotency_key: string | null; published_at: string | null; created_at: string; };
+        Insert: { id?: number; aggregate_type: string; aggregate_id: string; event_type: string; payload?: Json; idempotency_key?: string | null; published_at?: string | null; created_at?: string; };
+        Update: { id?: number; aggregate_type?: string; aggregate_id?: string; event_type?: string; payload?: Json; idempotency_key?: string | null; published_at?: string | null; created_at?: string; };
       };
     };
     Views: { [_ in never]: never };
