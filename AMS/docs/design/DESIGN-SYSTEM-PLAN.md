@@ -63,41 +63,78 @@ The AMS token system uses a **three-tier architecture** to separate abstract des
 
 Primitive tokens are **abstract, context-free values**—the raw palette from which semantic tokens are composed.
 
-#### 2.1.1 Color Palette
+#### 2.1.1 Color Palette - JVS Autoworks Brand
+
+**Official Brand Colors:**
 
 ```css
 :root {
-  /* Grays (neutral scale) */
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --color-gray-950: #030712;
+  /* JVS Autoworks Brand Colors */
+  /* Chrome Metallic Series */
+  --color-chrome-white: #F8F8F8;     /* Highlights, backgrounds */
+  --color-chrome-silver: #C0C0C0;    /* Letter gradient light, secondary UI */
+  --color-steel-gray: #989898;       /* Letter gradient mid, borders */
+  --color-gunmetal: #585858;         /* Letter gradient shadow, dark text */
+  
+  /* Racing Accent Colors */
+  --color-racing-red: #950304;       /* Primary actions, alerts, stripe accent */
+  --color-steel-blue: #446A91;       /* Links, info states, stripe accent */
+  --color-navy: #203C53;             /* "WORKS" fill, headers, dark backgrounds */
+  
+  /* Base Colors */
+  --color-black: #000000;            /* Pure black for backgrounds, text */
+  --color-white: #FFFFFF;            /* Pure white for contrast */
 
-  /* Brand Primary (placeholder - replaced in Design Pass) */
-  --color-brand-primary-50: #eff6ff;
-  --color-brand-primary-100: #dbeafe;
-  --color-brand-primary-200: #bfdbfe;
-  --color-brand-primary-300: #93c5fd;
-  --color-brand-primary-400: #60a5fa;
-  --color-brand-primary-500: #3b82f6;
-  --color-brand-primary-600: #2563eb;
-  --color-brand-primary-700: #1d4ed8;
-  --color-brand-primary-800: #1e40af;
-  --color-brand-primary-900: #1e3a8a;
+  /* Semantic Mappings (to be used throughout app) */
+  /* Primary Actions */
+  --color-brand-primary-50: #fef2f2;
+  --color-brand-primary-100: #fee2e2;
+  --color-brand-primary-200: #fecaca;
+  --color-brand-primary-300: #fca5a5;
+  --color-brand-primary-400: #f87171;
+  --color-brand-primary-500: #950304;  /* Racing Red - main brand color */
+  --color-brand-primary-600: #7a0203;
+  --color-brand-primary-700: #5f0202;
+  --color-brand-primary-800: #440101;
+  --color-brand-primary-900: #2a0101;
 
-  /* Brand Secondary (placeholder) */
-  --color-brand-secondary-50: #faf5ff;
-  --color-brand-secondary-100: #f3e8ff;
-  --color-brand-secondary-200: #e9d5ff;
-  --color-brand-secondary-300: #d8b4fe;
-  --color-brand-secondary-400: #c084fc;
+  /* Secondary Actions */
+  --color-brand-secondary-50: #eff6ff;
+  --color-brand-secondary-100: #dbeafe;
+  --color-brand-secondary-200: #bfdbfe;
+  --color-brand-secondary-300: #93c5fd;
+  --color-brand-secondary-400: #60a5fa;
+  --color-brand-secondary-500: #446A91;  /* Steel Blue */
+  --color-brand-secondary-600: #365576;
+  --color-brand-secondary-700: #28405b;
+  --color-brand-secondary-800: #1a2b40;
+  --color-brand-secondary-900: #0c1625;
+
+  /* Grays (Chrome/Steel series) */
+  --color-gray-50: #F8F8F8;   /* Chrome White */
+  --color-gray-100: #f0f0f0;
+  --color-gray-200: #e0e0e0;
+  --color-gray-300: #C0C0C0;  /* Chrome Silver */
+  --color-gray-400: #a8a8a8;
+  --color-gray-500: #989898;  /* Steel Gray */
+  --color-gray-600: #787878;
+  --color-gray-700: #585858;  /* Gunmetal */
+  --color-gray-800: #383838;
+  --color-gray-900: #282828;
+  --color-gray-950: #181818;
+
+  /* Navy Scale (for dark mode / headers) */
+  --color-navy-50: #f0f4f8;
+  --color-navy-100: #d9e2ec;
+  --color-navy-200: #bcccdc;
+  --color-navy-300: #9fb3c8;
+  --color-navy-400: #829ab1;
+  --color-navy-500: #627d98;
+  --color-navy-600: #486581;
+  --color-navy-700: #334e68;
+  --color-navy-800: #203C53;  /* Navy - main dark color */
+  --color-navy-900: #102a43;
+
   --color-brand-secondary-500: #a855f7;
   --color-brand-secondary-600: #9333ea;
   --color-brand-secondary-700: #7e22ce;

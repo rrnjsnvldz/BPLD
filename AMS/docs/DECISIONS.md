@@ -142,3 +142,83 @@ Fast-track approval granted. Questions Q-01 to Q-11 and Q-14 to Q-19 deferred to
 - Change Requests (CR-nn) require impact analysis and approval before implementation
 - Gate approvals require all entry criteria met and documented evidence
 - Always update the Master Plan and affected specs when a CR is approved
+
+
+---
+
+## AD-005: Brand Color Palette (2026-11-10)
+
+**Status:** ✅ Approved  
+**Decision Maker:** Owner  
+**Context:** Official JVS Autoworks brand colors and logo provided
+
+**Decision:**
+
+Use official JVS Autoworks brand colors throughout the application:
+
+**Primary Colors:**
+- **Racing Red** `#950304` - Primary actions, alerts, CTA buttons
+- **Steel Blue** `#446A91` - Secondary actions, links, info states
+- **Navy** `#203C53` - Dark mode, headers, navigation backgrounds
+
+**Chrome Metallic Series:**
+- **Chrome White** `#F8F8F8` - Highlights, light backgrounds
+- **Chrome Silver** `#C0C0C0` - Secondary UI elements, borders
+- **Steel Gray** `#989898` - Mid-tone borders, disabled states
+- **Gunmetal** `#585858` - Dark text, shadows
+
+**Application:**
+- Primary CTA buttons: Racing Red background
+- Secondary buttons: Steel Blue background
+- Navigation/Sidebar: Navy background with chrome accents
+- Cards/Panels: Chrome White backgrounds
+- Text: Gunmetal for body, Navy for headers
+- Links: Steel Blue
+- Success states: Keep green (not in brand palette)
+- Warning states: Keep amber/orange (not in brand palette)
+- Error states: Racing Red
+
+**Logo:**
+- Metallic chrome "JVS" letters with Racing Red/Steel Blue racing stripes
+- "AUTOWORKS" wordmark with Steel Blue "WORKS"
+- Tagline: "PERFORMANCE / SERVICE / REPAIR"
+
+**Rationale:**
+
+1. **Brand Consistency:** Aligns application UI with existing shop branding (signage, uniforms, marketing materials)
+2. **Automotive Heritage:** Chrome/metallic aesthetic reflects automotive industry, racing culture
+3. **Professional:** Navy and chrome combination conveys professionalism and reliability
+4. **Distinctive:** Racing Red/Steel Blue stripe accents make CTAs stand out
+5. **Flexible:** Palette works for both light and dark modes
+
+**Alternatives Considered:**
+
+- Generic blue/gray palette - Rejected: lacks brand identity
+- Full custom color palette - Rejected: owner has existing brand colors
+- Bright/vibrant colors - Rejected: doesn't fit automotive/performance brand
+
+**Implementation:**
+
+- Update `src/app/globals.css` Tailwind config with brand colors
+- Update `docs/design/DESIGN-SYSTEM-PLAN.md` with official palette
+- Replace placeholder blue theme with Racing Red primary
+- Add chrome gradient utilities for premium metallic effects
+- Create logo component with official colors
+
+**Impact:**
+
+- **Modules Affected:** All (UI Kit foundation)
+- **Files Changed:** 
+  - `tailwind.config.ts` - add brand colors
+  - `src/app/globals.css` - CSS custom properties
+  - `docs/design/DESIGN-SYSTEM-PLAN.md` - color documentation
+  - `docs/01-MASTER-PLAN.md` - design section
+- **Timeline:** Apply in Week 2 when creating final UI Kit
+- **Risk:** Low - colors defined before any modules built
+
+**References:**
+- Logo images provided by owner
+- Master Plan §8 (Design Readiness Plan)
+- Design System Plan §2.1.1 (Color Palette)
+
+**Approval:** Owner approved via color palette images (2026-11-10)

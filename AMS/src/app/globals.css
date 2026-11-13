@@ -1,13 +1,90 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   JVS AUTOWORKS BRAND COLORS
+   Official color palette for JVS Autoworks AMS
+   ============================================================================ */
+
 :root {
+  /* Base Colors */
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* JVS Autoworks Brand Colors */
+  /* Chrome Metallic Series */
+  --color-chrome-white: #F8F8F8;
+  --color-chrome-silver: #C0C0C0;
+  --color-steel-gray: #989898;
+  --color-gunmetal: #585858;
+  
+  /* Racing Accent Colors */
+  --color-racing-red: #950304;
+  --color-steel-blue: #446A91;
+  --color-navy: #203C53;
+  
+  /* Pure Values */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
 }
 
 @theme inline {
+  /* Brand Primary (Racing Red) */
+  --color-primary-50: #fef2f2;
+  --color-primary-100: #fee2e2;
+  --color-primary-200: #fecaca;
+  --color-primary-300: #fca5a5;
+  --color-primary-400: #f87171;
+  --color-primary-500: var(--color-racing-red);
+  --color-primary-600: #7a0203;
+  --color-primary-700: #5f0202;
+  --color-primary-800: #440101;
+  --color-primary-900: #2a0101;
+  --color-primary-950: #1a0000;
+  
+  /* Brand Secondary (Steel Blue) */
+  --color-secondary-50: #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: var(--color-steel-blue);
+  --color-secondary-600: #365576;
+  --color-secondary-700: #28405b;
+  --color-secondary-800: #1a2b40;
+  --color-secondary-900: #0c1625;
+  --color-secondary-950: #050a10;
+  
+  /* Grays (Chrome/Steel series) */
+  --color-gray-50: var(--color-chrome-white);
+  --color-gray-100: #f0f0f0;
+  --color-gray-200: #e0e0e0;
+  --color-gray-300: var(--color-chrome-silver);
+  --color-gray-400: #a8a8a8;
+  --color-gray-500: var(--color-steel-gray);
+  --color-gray-600: #787878;
+  --color-gray-700: var(--color-gunmetal);
+  --color-gray-800: #383838;
+  --color-gray-900: #282828;
+  --color-gray-950: #181818;
+  
+  /* Navy Scale (for dark mode / headers) */
+  --color-navy-50: #f0f4f8;
+  --color-navy-100: #d9e2ec;
+  --color-navy-200: #bcccdc;
+  --color-navy-300: #9fb3c8;
+  --color-navy-400: #829ab1;
+  --color-navy-500: #627d98;
+  --color-navy-600: #486581;
+  --color-navy-700: #334e68;
+  --color-navy-800: var(--color-navy);
+  --color-navy-900: #102a43;
+  --color-navy-950: #081423;
+  
+  /* Semantic Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  
+  /* Font Families */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

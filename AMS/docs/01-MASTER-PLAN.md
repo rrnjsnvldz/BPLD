@@ -672,6 +672,30 @@ This section summarizes each module's purpose, core functions, screens, key reco
 
 Full design plan in `docs/design/DESIGN-SYSTEM-PLAN.md`. Summary:
 
+**Brand Identity - JVS Autoworks:**
+
+Official Color Palette:
+- **Chrome White** `#F8F8F8` - Highlights, backgrounds
+- **Chrome Silver** `#C0C0C0` - Letter gradient (light), secondary UI elements
+- **Steel Gray** `#989898` - Letter gradient (mid), borders, disabled states
+- **Gunmetal** `#585858` - Letter gradient (shadow), text, dark elements
+- **Racing Red** `#950304` - Stripe accent, primary actions, alerts
+- **Steel Blue** `#446A91` - Stripe accent, links, info states
+- **Navy** `#203C53` - "WORKS" fill, component backgrounds, headers
+- **Black** `#000000` - Background, text
+
+**Logo Elements:**
+- Metallic chrome letters "JVS" with Racing Red/Steel Blue racing stripes
+- "AUTOWORKS" wordmark with Steel Blue "WORKS"
+- Tagline: "PERFORMANCE / SERVICE / REPAIR"
+
+**UI Application:**
+- Primary actions: Racing Red (#950304)
+- Secondary actions: Steel Blue (#446A91)
+- Neutral backgrounds: Chrome White (#F8F8F8)
+- Dark mode: Navy (#203C53) backgrounds
+- Accents: Chrome gradients for premium feel
+
 **Approach**: Build functional, neutral draft UI. Apply final design later in separate Design Pass (Part 4) without touching business logic.
 
 **Key Principles**:
