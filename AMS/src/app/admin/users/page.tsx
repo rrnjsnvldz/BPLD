@@ -159,8 +159,7 @@ export default async function UsersPage() {
                           user.roles.map((role) => (
                             <Badge 
                               key={role.id} 
-                              variant={role.id === 1 ? "default" : "secondary"}
-                              className={role.id === 1 ? "bg-primary-500 text-white hover:bg-primary-600" : "bg-secondary-100 text-secondary-700"}
+                              variant={role.id === 1 ? "default" : "secondaryLight"}
                             >
                               {role.name}
                             </Badge>

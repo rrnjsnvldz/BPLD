@@ -224,7 +224,6 @@ export function UserCreateForm({ availableRoles }: UserCreateFormProps) {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-primary-500 hover:bg-primary-600 text-white"
             >
               {isSubmitting ? (
                 <>
