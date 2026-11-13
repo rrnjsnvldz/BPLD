@@ -112,7 +112,8 @@ export default async function UsersPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader className="bg-navy-800">
               <TableRow className="hover:bg-navy-800 border-navy-700">
                 <TableHead className="text-white">User</TableHead>
@@ -180,6 +181,7 @@ export default async function UsersPage() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </AppLayout>

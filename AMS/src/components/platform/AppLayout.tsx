@@ -6,6 +6,7 @@
 import { ReactNode } from 'react'
 import { Sidebar } from './Sidebar'
 import { PageHeader } from './PageHeader'
+import { ErrorBoundary } from './ErrorBoundary'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -28,7 +29,9 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
 
         {/* Page content */}
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </main>
       </div>
     </div>
