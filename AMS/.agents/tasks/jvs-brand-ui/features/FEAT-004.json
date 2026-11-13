@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Implement User Creation (Module K) - Add User form with full validation. Create Zod schema for user input (full_name, email, phone optional, password min 8, role_ids array min 1), server action createUser that uses Supabase Admin API to create auth user and insert profile/roles, and client form page at /admin/users/new with react-hook-form + role multi-select. Form follows brand colors, shows loading states, displays toast feedback, and redirects to user list on success.",
+  "status": "completed",
+  "steps": [
+    "Create src/lib/platform/auth/schemas.ts: Export createUserSchema using zod with fields: full_name (z.string().min(2, 'Name must be at least 2 characters')), email (z.string().email('Invalid email format')), phone (z.string().nullable().optional()), password (z.string().min(8, 'Password must be at least 8 characters')), role_ids (z.array(z.number()).min(1, 'At least one role is required')). Export type CreateUserInput = z.infer<typeof createUserSchema>.",
+    "Create src/lib/platform/auth/user-actions.ts: Import createAdminClient pattern from role-actions.ts. Export async function createUser(data: CreateUserInput): Promise<ApiResponse<{ userId: string }>>. Implementation: 1) Create admin client, 2) Call supabase.auth.admin.createUser({ email: data.email, password: data.password, email_confirm: true }), 3) If error return {data: null, error: message, status: 500}, 4) Insert into user_profiles table {id: userId, full_name: data.full_name, phone: data.phone}, 5) For each role_id in data.role_ids insert into user_roles {user_id: userId, role_id}, 6) On success revalidatePath('/admin/users') and return {data: {userId}, error: null, status: 200}. Wrap all in try/catch.",
+    "Create src/app/admin/users/new/page.tsx as React Server Component: Import requireRole from session, call await requireRole(RoleId.Admin) at top. Import UserCreateForm client component. Fetch available roles from supabase.from('roles').select('*').order('id'). Return AppLayout with title='Add User' subtitle='Create a new user account' wrapping <UserCreateForm availableRoles={roles || []} />.",
+    "Create src/app/admin/users/new/UserCreateForm.tsx as 'use client' component: Props {availableRoles: Role[]}. Use react-hook-form with zodResolver(createUserSchema.extend({confirmPassword: z.string()})).refine((data) => data.password === data.confirmPassword, {message: 'Passwords must match', path: ['confirmPassword']}). Form fields: Full Name (Input), Email (Input type='email' autocomplete='email'), Phone (Input type='tel' autocomplete='tel' optional), Password (Input type='password' autocomplete='new-password'), Confirm Password (Input type='password' autocomplete='new-password'), Roles (checkboxes for each availableRole, at least one required). On submit: call createUser action, on success showToast.success('User created') + router.push('/admin/users'), on error showToast.error(error). Show loading state with disabled inputs and spinner in submit button. Cancel button as Link to '/admin/users' variant='outline'. Apply brand colors: card bg-white, submit button default variant (primary-500), cancel button outline variant.",
+    "Update src/app/admin/users/page.tsx: Verify the 'Add User' button link href='/admin/users/new' is present (it already exists in the code read earlier, so just confirm no changes needed here)"
+  ],
+  "acceptance_criteria": [
+    "User creation form accessible at /admin/users/new (Admin only)",
+    "Form validates all fields: name min 2 chars, valid email, password min 8 chars, confirm password matches, at least one role selected",
+    "On submit, creates user in Supabase auth, inserts profile and role assignments",
+    "Success shows toast and redirects to /admin/users",
+    "Error shows toast with error message",
+    "Loading state disables form and shows spinner",
+    "Cancel button returns to user list",
+    "Form uses brand colors: primary-500 submit button, outline cancel button",
+    "All inputs have proper autocomplete attributes",
+    "Build and lint pass with no errors"
+  ],
+  "verification": [
+    "Run 'npm run build' and confirm no TypeScript errors",
+    "Run 'npm run lint' and confirm no errors",
+    "Run 'npm run dev', login as admin, navigate to /admin/users, click 'Add User' button, verify form loads at /admin/users/new",
+    "Test validation: submit empty form (should show errors), enter mismatched passwords (should show error), submit valid form with all fields and at least one role selected",
+    "Verify successful submission creates user: check /admin/users list for new user, confirm user can login with created credentials, confirm assigned roles appear in user profile",
+    "Test cancel button returns to /admin/users without creating user"
+  ],
+  "blocked_reason": null,
+  "findings": "Implementation completed successfully. All files created: schemas.ts (Zod validation), user-actions.ts (server action with admin client), page.tsx (RSC with role fetch), UserCreateForm.tsx (client form with react-hook-form). Checkbox component created for role selection. Build and lint passed with no errors (1 React Compiler warning about watch() is acceptable). Form includes all required fields with proper validation, loading states, toast feedback, and brand colors (primary-500 submit button, outline cancel)."
+}
