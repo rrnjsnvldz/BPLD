@@ -10,9 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Calendar, User, Shield } from 'lucide-react'
 
-// Allow blocking route for authenticated pages
-export const instant = false
-
 /**
  * Format current date/time in Asia/Manila timezone
  */

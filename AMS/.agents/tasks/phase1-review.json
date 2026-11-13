@@ -2,59 +2,47 @@
   "verdict": "CHANGES_REQUESTED",
   "findings": [
     {
-      "issue": "Service role key in example without guard",
-      "severity": "MEDIUM",
-      "description": ".env.local.example includes SUPABASE_SERVICE_ROLE_KEY with no code guard preventing accidental client-side use. Add a runtime check or move to separate .env.service.local file and document that it must never be imported in client-side code.",
-      "confidence": "likely"
-    },
-    {
-      "issue": "Missing RLS INSERT policy for user_profiles",
       "severity": "HIGH",
-      "description": "Users cannot create their own profile row after signup. Add policy: CREATE POLICY user_profiles_insert_own ON public.user_profiles FOR INSERT WITH CHECK (auth.uid() = id);",
+      "issue": "Admin policy gap — user_profiles",
+      "description": "Admins cannot view or manage other users' profiles. Add a policy: CREATE POLICY user_profiles_admin_all ON public.user_profiles FOR ALL TO authenticated USING (EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role_id = 1));",
       "confidence": "confirmed"
     },
     {
-      "issue": "signUp action doesn't create user_profiles row",
       "severity": "HIGH",
-      "description": "After Supabase auth.signUp succeeds, no profile row is created. Either add server-side insert in the action or use a Supabase trigger on auth.users insert.",
+      "issue": "Admin policy gap — user_roles",
+      "description": "Admins cannot assign roles or view role assignments for other users. Add policies for INSERT and SELECT allowing role_id = 1 (Admin).",
       "confidence": "confirmed"
     },
     {
-      "issue": "Auth error messages leak Supabase internals",
       "severity": "MEDIUM",
-      "description": "signIn, signUp, resetPassword return error.message directly from Supabase, which may expose schema details like table names or constraint violations. Sanitize to user-friendly messages.",
+      "issue": "Type safety bypass in signUp",
+      "description": "supabase as any defeats type checking for profile insertion. Fix by removing the cast and using an explicit typed payload: const payload: Database['public']['Tables']['user_profiles']['Insert'] = { ... }",
+      "confidence": "confirmed"
+    },
+    {
+      "severity": "MEDIUM",
+      "issue": "No idempotency protection in outbox",
+      "description": "Concurrent or retried transactions can insert duplicate events. Add a unique partial index or application-level deduplication keys (idempotency_key column).",
       "confidence": "likely"
     },
     {
-      "issue": "requireAuth redirect timing allows data fetch",
       "severity": "LOW",
-      "description": "If requireAuth is called after a database query in the same Server Component, the query executes before the redirect. Document that requireAuth must be the first call, or restructure to throw instead of redirect.",
-      "confidence": "possible"
+      "issue": "Middleware doesn't enforce roles",
+      "description": "Unauthenticated users are redirected, but role checks happen only in Server Components via requireRole. Consider whether certain routes (e.g., /admin/*) should be blocked at the middleware level or if component-level checks are sufficient.",
+      "confidence": "likely"
     },
     {
-      "issue": "App-to-module ESLint rule is warn, not error",
-      "severity": "MEDIUM",
-      "description": "The ESLint rule blocking app/components from importing module internals is severity 'warn', which won't fail CI. Change to 'error' for consistency with ADR-002.",
+      "severity": "LOW",
+      "issue": "Missing /unauthorized page",
+      "description": "requireRole redirects to /unauthorized, but if that page doesn't exist, users see a 404. Create the page in Module K or document the requirement.",
       "confidence": "confirmed"
     },
     {
-      "issue": "Missing outbox.event_type index",
-      "severity": "MEDIUM",
-      "description": "Queries filtering by event type will scan all unpublished events. Add index: CREATE INDEX idx_outbox_event_type ON outbox(event_type) WHERE published_at IS NULL;",
-      "confidence": "confirmed"
-    },
-    {
-      "issue": "Missing composite index on audit_log",
-      "severity": "MEDIUM",
-      "description": "Looking up a record's history (WHERE table_name = 'c_service_orders' AND record_id = '123') will use only one index. Add: CREATE INDEX idx_audit_log_record ON audit_log(table_name, record_id);",
-      "confidence": "confirmed"
-    },
-    {
-      "issue": "Architectural test doesn't catch .tsx or dynamic imports",
-      "severity": "MEDIUM",
-      "description": "Test only scans .ts files. Add .tsx to the extension list. Dynamic imports (import()) won't be caught by the regex; document this limitation.",
+      "severity": "LOW",
+      "issue": "Migration comments incomplete",
+      "description": "user_roles.granted_by comment says 'Admin who granted this role' but the column is nullable for system-granted roles. audit_log.user_id is nullable for system actions but doesn't document it. Clarify both comments.",
       "confidence": "confirmed"
     }
   ],
-  "reviewDoc": "c:\\Users\\User\\AMS\\.agents\\tasks\\2026-11-11-120504-review.md"
+  "reviewDoc": "c:\\Users\\User\\AMS\\.agents\\tasks\\phase1-review.md"
 }

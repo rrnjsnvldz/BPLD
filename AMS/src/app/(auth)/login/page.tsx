@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { signIn } from '@/lib/platform/auth/actions'
+import { showToast } from '@/lib/utils/toast'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -30,13 +31,17 @@ export default function LoginPage() {
       
       if (result.error) {
         setError(result.error)
+        showToast.error(result.error)
       } else {
+        showToast.success('Welcome back!')
         // Redirect to dashboard
         router.push('/')
         router.refresh()
       }
     } catch {
-      setError('An unexpected error occurred. Please try again.')
+      const errorMsg = 'An unexpected error occurred. Please try again.'
+      setError(errorMsg)
+      showToast.error(errorMsg)
     } finally {
       setLoading(false)
     }

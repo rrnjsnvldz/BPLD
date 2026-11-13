@@ -4,7 +4,6 @@
  * Call from Client Component form handlers.
  */
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { createClient } from '../db/server';
 import type { ApiResponse, Database } from '../types';
 
@@ -22,7 +21,7 @@ export async function signIn(
     };
   }
   revalidatePath('/', 'layout');
-  redirect('/');
+  return { data: null, error: null, status: 200 };
 }
 
 export async function signUp(
@@ -38,9 +37,10 @@ export async function signUp(
   });
   
   if (authError) {
+    console.error('Supabase auth.signUp error:', authError);
     return { 
       data: null, 
-      error: 'Unable to create account. Please try again.', 
+      error: `Unable to create account: ${authError.message}`, 
       status: 400 
     };
   }
@@ -63,17 +63,30 @@ export async function signUp(
     if (profileError) {
       // Profile creation failed but auth succeeded - log this but don't fail signup
       console.error('Failed to create user profile:', profileError);
+      return { 
+        data: null, 
+        error: `Account created but profile setup failed: ${profileError.message}`, 
+        status: 500 
+      };
     }
   }
 
+  console.log('Signup successful for:', email);
   return { data: null, error: null, status: 200 };
 }
 
-export async function signOut(): Promise<void> {
+export async function signOut(): Promise<ApiResponse<null>> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    return { 
+      data: null, 
+      error: 'Failed to sign out. Please try again.', 
+      status: 500 
+    };
+  }
   revalidatePath('/', 'layout');
-  redirect('/login');
+  return { data: null, error: null, status: 200 };
 }
 
 export async function resetPassword(

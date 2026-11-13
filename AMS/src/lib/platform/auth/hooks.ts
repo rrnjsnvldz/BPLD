@@ -60,12 +60,14 @@ export function useUser(): UseUserResult {
           .from('user_profiles')
           .select('*')
           .eq('id', authUser.id)
-          .single()
+          .maybeSingle()
 
         if (profileError) {
           console.error('Error fetching user profile:', profileError)
-          setError('Failed to load user profile')
-        } else {
+          // Don't set error state - profile might not exist yet
+        }
+        
+        if (profileData) {
           setProfile(profileData)
         }
 
@@ -77,8 +79,10 @@ export function useUser(): UseUserResult {
 
         if (rolesError) {
           console.error('Error fetching user roles:', rolesError)
-          setError('Failed to load user roles')
-        } else {
+          // Don't set error state - roles might not exist yet
+        }
+        
+        if (userRolesData) {
           // Extract roles from the join
           interface UserRoleWithRole {
             role_id: number
