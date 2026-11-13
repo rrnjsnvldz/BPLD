@@ -1,0 +1,13 @@
+{
+  "task_id": "task-jvs-brand-ui",
+  "task_description": "Apply JVS Autoworks brand colors and logo across the Next.js 15 app, create user management module, and polish accessibility",
+  "status": "completed",
+  "feature_order": [
+    "FEAT-001",
+    "FEAT-002",
+    "FEAT-003",
+    "FEAT-004",
+    "FEAT-005"
+  ],
+  "blocked_reason": null
+}
