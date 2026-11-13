@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Update Sidebar navigation to use the new JVSLogo component instead of plain text title. Desktop shows full variant (icon + AUTOWORKS + tagline), mobile shows icon-only variant. Apply refined Navy background colors, Racing Red active link accent with left border, Steel Blue avatar fallback. Ensure proper responsive behavior and accessibility (aria-current on active links).",
+  "status": "completed",
+  "steps": [
+    "Update src/components/platform/Sidebar.tsx: Import JVSLogo from '@/components/brand/JVSLogo'",
+    "Replace the plain text 'JRS Bongabon AMS' title with: <div className='hidden md:flex'><JVSLogo size='md' variant='full' /></div> for desktop and <div className='flex md:hidden'><JVSLogo size='sm' variant='icon' /></div> for mobile. Wrap both in the existing flex container.",
+    "Verify the active link styling includes aria-current='page' attribute: Add aria-current={isActive ? 'page' : undefined} to each Link component in the navigation map",
+    "Confirm all color updates from FEAT-001 are present: bg-navy-800 main bg, active link with border-l-4 border-primary-500 (increase from border-l-2 to border-l-4 for better visibility), bg-navy-900 bottom user area",
+    "Test responsive behavior: logo switches from full to icon at md breakpoint, sidebar remains fixed and scrollable"
+  ],
+  "acceptance_criteria": [
+    "Desktop sidebar shows JVS full logo (icon + AUTOWORKS + tagline)",
+    "Mobile sidebar shows JVS icon only",
+    "Active navigation links have aria-current='page' attribute",
+    "Active link shows Racing Red left border accent (border-l-4 border-primary-500)",
+    "Logo renders with proper sizing and alignment in the sidebar header",
+    "No TypeScript or build errors"
+  ],
+  "verification": [
+    "Run 'npm run build' and confirm no errors",
+    "Run 'npm run lint' and confirm no errors",
+    "Run 'npm run dev' and test at http://localhost:3000: Resize browser window to verify logo switches from full to icon at md breakpoint (~768px). Click through navigation links and confirm active link shows red left border and has aria-current='page' in DevTools. Verify logo gradient renders correctly."
+  ],
+  "blocked_reason": null,
+  "findings": "JVSLogo component successfully integrated into Sidebar navigation. Desktop sidebar (md breakpoint and above) displays full logo variant with JVS icon, AUTOWORKS text, JVS Bongabon tagline, and racing stripes. Mobile sidebar displays icon-only variant with JVS letters and chrome gradient. All navigation links now include aria-current='page' attribute on active links for improved accessibility. Active link border increased from border-l-2 to border-l-4 (Racing Red #950304) for better visibility. Build and lint passed with no errors. Manual verification required: Run 'npm run dev' and test responsive logo switching by resizing browser at md breakpoint (~768px), verify chrome gradient renders correctly, check aria-current attribute in DevTools on active links, and confirm Racing Red left border appears on active navigation items."
+}

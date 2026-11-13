@@ -37,6 +37,7 @@ import { signOut } from '@/lib/platform/auth/actions'
 import { useUser } from '@/lib/platform/auth/hooks'
 import { showToast } from '@/lib/utils/toast'
 import { useRouter } from 'next/navigation'
+import JVSLogo from '@/components/brand/JVSLogo'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -89,9 +90,14 @@ export function Sidebar() {
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-navy-800 border-r border-navy-700">
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
-        <h1 className="text-xl font-bold text-white">
-          JRS Bongabon AMS
-        </h1>
+        {/* Desktop: Full logo with icon + AUTOWORKS + tagline */}
+        <div className="hidden md:flex">
+          <JVSLogo size="md" variant="full" />
+        </div>
+        {/* Mobile: Icon only */}
+        <div className="flex md:hidden">
+          <JVSLogo size="sm" variant="icon" />
+        </div>
       </div>
 
       <Separator className="bg-navy-700" />
@@ -104,10 +110,11 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-primary-500/20 text-primary-300 border-l-2 border-primary-500'
+                  ? 'bg-primary-500/20 text-primary-300 border-l-4 border-primary-500'
                   : 'text-white hover:bg-navy-700 hover:text-white'
               )}
             >
@@ -132,10 +139,11 @@ export function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
                   className={cn(
                     'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-primary-500/20 text-primary-300 border-l-2 border-primary-500'
+                      ? 'bg-primary-500/20 text-primary-300 border-l-4 border-primary-500'
                       : 'text-white hover:bg-navy-700 hover:text-white'
                   )}
                 >
