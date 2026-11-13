@@ -1,0 +1,28 @@
+{
+  "project_type": "Next.js 15 App Router + Tailwind CSS v4 + Supabase + shadcn/ui + TypeScript",
+  "language": "TypeScript / TSX",
+  "build_system": "Next.js built-in build system with Turbopack, npm as package manager",
+  "test_framework": "Vitest for unit and integration tests",
+  "build_command": "npm run build",
+  "test_command": "npm run test:run",
+  "verification_instructions": "For every feature: 1) Run npm run build and confirm no TypeScript errors, 2) Run npm run lint and confirm no ESLint errors, 3) Start dev server with npm run dev and manually verify UI changes in browser at localhost:3000, 4) Test affected pages by clicking through the flow",
+  "snapshot_or_generated_files": "None that need to be committed for this task. .next/ build output is gitignored.",
+  "environment_constraints": "Must have NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local for server actions to work. Dev server runs on port 3000 by default.",
+  "contribution_requirements": "All commits must reference checklist ID. PRs require at least 1 reviewer. Auth/permission/money changes require 2 reviewers. Use conventional commits. No hardcoded values. Use canonical terms from glossary. No raw visual values (use design tokens). Test before commit. Update documentation.",
+  "key_patterns": "Brand colors defined in src/app/globals.css as Tailwind v4 inline theme (@theme inline block). Colors: primary-* (Racing Red #950304), secondary-* (Steel Blue #446A91), gray-* (chrome/steel series), navy-* (Navy #203C53). Server actions pattern: create 'use server' functions in src/lib/platform/auth/*-actions.ts, use createAdminClient() helper with SUPABASE_SERVICE_ROLE_KEY for admin operations, return ApiResponse<T> with {data, error, status}, call revalidatePath after mutations. Client forms: react-hook-form + zodResolver, use showToast from @/lib/utils/toast for feedback. Auth: requireRole(RoleId.Admin) in RSC pages for admin-only access. RoleId enum in src/lib/platform/types/index.ts.",
+  "relevant_files": [
+    "src/app/globals.css",
+    "src/components/platform/Sidebar.tsx",
+    "src/app/page.tsx",
+    "src/app/admin/users/page.tsx",
+    "src/app/admin/users/[id]/page.tsx",
+    "src/app/admin/users/[id]/UserRoleManager.tsx",
+    "src/app/(auth)/login/page.tsx",
+    "src/app/(auth)/register/page.tsx",
+    "src/components/ui/button.tsx",
+    "src/lib/platform/auth/role-actions.ts",
+    "src/lib/platform/types/index.ts",
+    "src/components/platform/AppLayout.tsx"
+  ],
+  "directory_structure": "src/app/ contains Next.js App Router pages (RSC by default), src/components/ has ui/ (shadcn components) and platform/ (shared app components), src/lib/platform/ holds core services (auth/, db/, types/), src/lib/modules/ for business logic (not used in this task)"
+}

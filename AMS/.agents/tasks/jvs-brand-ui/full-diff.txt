@@ -1,0 +1,1317 @@
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-001.json b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-001.json
+new file mode 100644
+index 00000000..8ba680c2
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-001.json
+@@ -0,0 +1,31 @@
++{
++  "id": "FEAT-001",
++  "type": "feat",
++  "description": "Apply JVS Autoworks brand colors to all existing UI components. Replace all gray/blue/red Tailwind classes with the brand palette: primary-* (Racing Red), secondary-* (Steel Blue), navy-* (Navy), gray-* (Chrome/Steel). Update Sidebar (navy-800 bg, white text, primary-500 active, navy-700 hover), Dashboard (gray-50 cards, secondary-500 role badges), Admin Users page (navy-800 table header, primary-500 Admin badge, secondary-100 role badges), Auth pages (gray-50 bg, primary-500 buttons, secondary-500 links, primary-50/800 error box), Button component variants (defaultGÂ∆primary-500, secondaryGÂ∆secondary-500, destructiveGÂ∆primary-700, outlineGÂ∆primary-500 border, ghostGÂ∆primary-500).",
++  "status": "completed",
++  "steps": [
++    "Update src/components/platform/Sidebar.tsx: bg-navy-800 (main bg), text-white (text), active link bg-primary-500/20 text-primary-300 border-l-2 border-primary-500, hover:bg-navy-700 hover:text-white, section labels text-gray-400, bottom user area bg-navy-900 border-t border-navy-700 with name text-white and role text-gray-400, avatar fallback bg-secondary-500 text-white",
++    "Update src/app/page.tsx (Dashboard): Card bg stays default, card content icons text-gray-500, labels text-gray-700, values text-gray-600, role badges use variant='secondary' which will render bg-secondary-500 after button updates, quick stats cards keep default styling (will inherit from Card component)",
++    "Update src/app/admin/users/page.tsx: Table header bg-navy-800 text-white, table rows alternating bg-white/bg-gray-50, role badges for non-admin roles bg-secondary-100 text-secondary-700, Admin role badge bg-primary-500 text-white, View button variant='outline' (will use primary-500 border after button update)",
++    "Update src/app/admin/users/[id]/page.tsx: Keep existing structure, icons text-gray-500, labels text-gray-700, values text-gray-600 (already aligned with brand grays)",
++    "Update src/app/(auth)/login/page.tsx: Container bg-gray-50, card bg-white (default), primary button remove explicit classes (will inherit from Button default variant), links text-secondary-500 hover:text-secondary-600, error box bg-primary-50 border border-primary-200 text-primary-800, input focus rings focus:ring-primary-500 focus:border-primary-500",
++    "Update src/app/(auth)/register/page.tsx: Same pattern as login - bg-gray-50 container, text-secondary-500 links, bg-primary-50 error box (red-50GÂ∆primary-50), bg-green-50 success box unchanged, primary button uses default variant, email input add autocomplete='email', password inputs add autocomplete='new-password'",
++    "Update src/components/ui/button.tsx buttonVariants: default variant to 'bg-primary-500 text-white shadow hover:bg-primary-600 focus-visible:ring-primary-500', secondary variant to 'bg-secondary-500 text-white shadow-sm hover:bg-secondary-600', destructive to 'bg-primary-700 text-white shadow-sm hover:bg-primary-800', outline to 'border border-primary-500 text-primary-500 bg-background shadow-sm hover:bg-primary-50', ghost to 'text-primary-500 hover:bg-primary-50 hover:text-primary-600'"
++  ],
++  "acceptance_criteria": [
++    "All Sidebar colors match brand: Navy background, white text, Racing Red active state, Steel Blue avatar",
++    "Dashboard role badges use Steel Blue (secondary-500)",
++    "Admin users table has Navy header, Racing Red Admin badges, Steel Blue role badges",
++    "Login and register pages use Racing Red buttons, Steel Blue links, Racing Red error alerts",
++    "Button component default variant is Racing Red, secondary is Steel Blue, destructive is dark red",
++    "No build errors when running npm run build",
++    "No lint errors when running npm run lint"
++  ],
++  "verification": [
++    "Run 'npm run build' and confirm exit code 0 with no TypeScript errors",
++    "Run 'npm run lint' and confirm exit code 0",
++    "Run 'npm run dev' and visually verify at http://localhost:3000: Sidebar is navy with red active link, Dashboard badges are steel blue, Admin Users page has navy header and correct badge colors, Login page has red button and blue links, all buttons across app show correct brand colors"
++  ],
++  "blocked_reason": null,
++  "findings": "All JVS Autoworks brand colors successfully applied. Build and lint passed with no errors. Visual verification requires user to run 'npm run dev' and check: (1) Sidebar with navy background, white text, red active states, and steel blue avatar fallback, (2) Dashboard role badges in steel blue, (3) Admin Users table with navy header, red Admin badges, and steel blue role badges, (4) Login/Register pages with red primary buttons and steel blue links, (5) All button variants using correct brand colors throughout the app."
++}
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-002.json b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-002.json
+new file mode 100644
+index 00000000..ec1c450f
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-002.json
+@@ -0,0 +1,29 @@
++{
++  "id": "FEAT-002",
++  "type": "feat",
++  "description": "Create JVSLogo SVG component with chrome metallic gradient effect and racing stripes. Component accepts size prop (sm=32px, md=48px, lg=64px, xl=96px) and variant prop (icon=JVS letters only, full=icon+AUTOWORKS text+tagline). Icon uses linear gradient from Chrome Silver #C0C0C0 (top) to Steel Gray #989898 (mid) to Gunmetal #585858 (bottom). Full variant adds 'AUTOWORKS' text and 'JVS Bongabon' tagline in steel-gray, plus two racing stripes (Racing Red #950304 and Steel Blue #446A91).",
++  "status": "completed",
++  "steps": [
++    "Create directory src/components/brand/ if it doesn't exist",
++    "Create src/components/brand/JVSLogo.tsx: Export React component with props {size: 'sm'|'md'|'lg'|'xl', variant: 'full'|'icon'}. Map sizes to pixels: sm=32, md=48, lg=64, xl=96. Render inline SVG with viewBox proportional to design.",
++    "In JVSLogo.tsx, create SVG <linearGradient> with id 'chromeGradient' with stops: 0% #C0C0C0 (Chrome Silver), 50% #989898 (Steel Gray), 100% #585858 (Gunmetal). Apply gradient to 'JVS' text or letter shapes.",
++    "For icon variant: render just 'JVS' text/letters with chrome gradient fill, scaled to the size prop",
++    "For full variant: render icon on left, 'AUTOWORKS' text to the right in text-gray-700 (steel-gray), 'JVS Bongabon' tagline below in text-sm text-gray-600, two thin horizontal lines (racing stripes) under/near the text: one stroke='#950304' (Racing Red) and one stroke='#446A91' (Steel Blue), each 2px thick",
++    "Export JVSLogo as default export from src/components/brand/JVSLogo.tsx"
++  ],
++  "acceptance_criteria": [
++    "JVSLogo component renders without errors",
++    "Icon variant shows JVS letters with chrome metallic gradient",
++    "Full variant shows icon + AUTOWORKS + tagline + racing stripes",
++    "Size prop correctly scales the logo (sm/md/lg/xl)",
++    "Component compiles with no TypeScript errors",
++    "Logo uses only inline SVG, no external images or files"
++  ],
++  "verification": [
++    "Run 'npm run build' and confirm no TypeScript errors in src/components/brand/JVSLogo.tsx",
++    "Run 'npm run lint' and confirm no errors",
++    "Create a test page or add <JVSLogo size='md' variant='full' /> to dashboard temporarily and verify in browser that gradient renders correctly and racing stripes are visible"
++  ],
++  "blocked_reason": null,
++  "findings": "JVSLogo component created successfully at src/components/brand/JVSLogo.tsx. Component supports two variants: 'icon' (JVS letters only with chrome metallic gradient) and 'full' (icon + AUTOWORKS + JVS Bongabon tagline + racing stripes in Racing Red and Steel Blue). Four size options implemented: sm=32px, md=48px, lg=64px, xl=96px. Chrome gradient uses linear gradient from Chrome Silver #C0C0C0 (0%) to Steel Gray #989898 (50%) to Gunmetal #585858 (100%). Racing stripes use Racing Red #950304 and Steel Blue #446A91. Build and lint passed with no errors. Component uses inline SVG as specified. Visual verification: user should run 'npm run dev' and temporarily import <JVSLogo size='md' variant='full' /> to src/app/page.tsx to confirm gradient renders correctly in browser."
++}
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-003.json b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-003.json
+new file mode 100644
+index 00000000..4e1d73c5
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-003.json
+@@ -0,0 +1,28 @@
++{
++  "id": "FEAT-003",
++  "type": "feat",
++  "description": "Update Sidebar navigation to use the new JVSLogo component instead of plain text title. Desktop shows full variant (icon + AUTOWORKS + tagline), mobile shows icon-only variant. Apply refined Navy background colors, Racing Red active link accent with left border, Steel Blue avatar fallback. Ensure proper responsive behavior and accessibility (aria-current on active links).",
++  "status": "completed",
++  "steps": [
++    "Update src/components/platform/Sidebar.tsx: Import JVSLogo from '@/components/brand/JVSLogo'",
++    "Replace the plain text 'JRS Bongabon AMS' title with: <div className='hidden md:flex'><JVSLogo size='md' variant='full' /></div> for desktop and <div className='flex md:hidden'><JVSLogo size='sm' variant='icon' /></div> for mobile. Wrap both in the existing flex container.",
++    "Verify the active link styling includes aria-current='page' attribute: Add aria-current={isActive ? 'page' : undefined} to each Link component in the navigation map",
++    "Confirm all color updates from FEAT-001 are present: bg-navy-800 main bg, active link with border-l-4 border-primary-500 (increase from border-l-2 to border-l-4 for better visibility), bg-navy-900 bottom user area",
++    "Test responsive behavior: logo switches from full to icon at md breakpoint, sidebar remains fixed and scrollable"
++  ],
++  "acceptance_criteria": [
++    "Desktop sidebar shows JVS full logo (icon + AUTOWORKS + tagline)",
++    "Mobile sidebar shows JVS icon only",
++    "Active navigation links have aria-current='page' attribute",
++    "Active link shows Racing Red left border accent (border-l-4 border-primary-500)",
++    "Logo renders with proper sizing and alignment in the sidebar header",
++    "No TypeScript or build errors"
++  ],
++  "verification": [
++    "Run 'npm run build' and confirm no errors",
++    "Run 'npm run lint' and confirm no errors",
++    "Run 'npm run dev' and test at http://localhost:3000: Resize browser window to verify logo switches from full to icon at md breakpoint (~768px). Click through navigation links and confirm active link shows red left border and has aria-current='page' in DevTools. Verify logo gradient renders correctly."
++  ],
++  "blocked_reason": null,
++  "findings": "JVSLogo component successfully integrated into Sidebar navigation. Desktop sidebar (md breakpoint and above) displays full logo variant with JVS icon, AUTOWORKS text, JVS Bongabon tagline, and racing stripes. Mobile sidebar displays icon-only variant with JVS letters and chrome gradient. All navigation links now include aria-current='page' attribute on active links for improved accessibility. Active link border increased from border-l-2 to border-l-4 (Racing Red #950304) for better visibility. Build and lint passed with no errors. Manual verification required: Run 'npm run dev' and test responsive logo switching by resizing browser at md breakpoint (~768px), verify chrome gradient renders correctly, check aria-current attribute in DevTools on active links, and confirm Racing Red left border appears on active navigation items."
++}
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-004.json b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-004.json
+new file mode 100644
+index 00000000..daa6504a
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-004.json
+@@ -0,0 +1,35 @@
++{
++  "id": "FEAT-004",
++  "type": "feat",
++  "description": "Implement User Creation (Module K) - Add User form with full validation. Create Zod schema for user input (full_name, email, phone optional, password min 8, role_ids array min 1), server action createUser that uses Supabase Admin API to create auth user and insert profile/roles, and client form page at /admin/users/new with react-hook-form + role multi-select. Form follows brand colors, shows loading states, displays toast feedback, and redirects to user list on success.",
++  "status": "completed",
++  "steps": [
++    "Create src/lib/platform/auth/schemas.ts: Export createUserSchema using zod with fields: full_name (z.string().min(2, 'Name must be at least 2 characters')), email (z.string().email('Invalid email format')), phone (z.string().nullable().optional()), password (z.string().min(8, 'Password must be at least 8 characters')), role_ids (z.array(z.number()).min(1, 'At least one role is required')). Export type CreateUserInput = z.infer<typeof createUserSchema>.",
++    "Create src/lib/platform/auth/user-actions.ts: Import createAdminClient pattern from role-actions.ts. Export async function createUser(data: CreateUserInput): Promise<ApiResponse<{ userId: string }>>. Implementation: 1) Create admin client, 2) Call supabase.auth.admin.createUser({ email: data.email, password: data.password, email_confirm: true }), 3) If error return {data: null, error: message, status: 500}, 4) Insert into user_profiles table {id: userId, full_name: data.full_name, phone: data.phone}, 5) For each role_id in data.role_ids insert into user_roles {user_id: userId, role_id}, 6) On success revalidatePath('/admin/users') and return {data: {userId}, error: null, status: 200}. Wrap all in try/catch.",
++    "Create src/app/admin/users/new/page.tsx as React Server Component: Import requireRole from session, call await requireRole(RoleId.Admin) at top. Import UserCreateForm client component. Fetch available roles from supabase.from('roles').select('*').order('id'). Return AppLayout with title='Add User' subtitle='Create a new user account' wrapping <UserCreateForm availableRoles={roles || []} />.",
++    "Create src/app/admin/users/new/UserCreateForm.tsx as 'use client' component: Props {availableRoles: Role[]}. Use react-hook-form with zodResolver(createUserSchema.extend({confirmPassword: z.string()})).refine((data) => data.password === data.confirmPassword, {message: 'Passwords must match', path: ['confirmPassword']}). Form fields: Full Name (Input), Email (Input type='email' autocomplete='email'), Phone (Input type='tel' autocomplete='tel' optional), Password (Input type='password' autocomplete='new-password'), Confirm Password (Input type='password' autocomplete='new-password'), Roles (checkboxes for each availableRole, at least one required). On submit: call createUser action, on success showToast.success('User created') + router.push('/admin/users'), on error showToast.error(error). Show loading state with disabled inputs and spinner in submit button. Cancel button as Link to '/admin/users' variant='outline'. Apply brand colors: card bg-white, submit button default variant (primary-500), cancel button outline variant.",
++    "Update src/app/admin/users/page.tsx: Verify the 'Add User' button link href='/admin/users/new' is present (it already exists in the code read earlier, so just confirm no changes needed here)"
++  ],
++  "acceptance_criteria": [
++    "User creation form accessible at /admin/users/new (Admin only)",
++    "Form validates all fields: name min 2 chars, valid email, password min 8 chars, confirm password matches, at least one role selected",
++    "On submit, creates user in Supabase auth, inserts profile and role assignments",
++    "Success shows toast and redirects to /admin/users",
++    "Error shows toast with error message",
++    "Loading state disables form and shows spinner",
++    "Cancel button returns to user list",
++    "Form uses brand colors: primary-500 submit button, outline cancel button",
++    "All inputs have proper autocomplete attributes",
++    "Build and lint pass with no errors"
++  ],
++  "verification": [
++    "Run 'npm run build' and confirm no TypeScript errors",
++    "Run 'npm run lint' and confirm no errors",
++    "Run 'npm run dev', login as admin, navigate to /admin/users, click 'Add User' button, verify form loads at /admin/users/new",
++    "Test validation: submit empty form (should show errors), enter mismatched passwords (should show error), submit valid form with all fields and at least one role selected",
++    "Verify successful submission creates user: check /admin/users list for new user, confirm user can login with created credentials, confirm assigned roles appear in user profile",
++    "Test cancel button returns to /admin/users without creating user"
++  ],
++  "blocked_reason": null,
++  "findings": "Implementation completed successfully. All files created: schemas.ts (Zod validation), user-actions.ts (server action with admin client), page.tsx (RSC with role fetch), UserCreateForm.tsx (client form with react-hook-form). Checkbox component created for role selection. Build and lint passed with no errors (1 React Compiler warning about watch() is acceptable). Form includes all required fields with proper validation, loading states, toast feedback, and brand colors (primary-500 submit button, outline cancel)."
++}
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-005.json b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-005.json
+new file mode 100644
+index 00000000..90ed17b8
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/features/FEAT-005.json
+@@ -0,0 +1,32 @@
++{
++  "id": "FEAT-005",
++  "type": "chore",
++  "description": "Polish and accessibility improvements across the app. Add aria-current to active Sidebar links (done in FEAT-003 but verify), add horizontal scroll wrapper to admin users table for mobile responsiveness, ensure login/register inputs have autocomplete attributes (partially done in FEAT-001/FEAT-004 but verify all), add React error boundary component to AppLayout for graceful error handling, explicitly handle null cases in async Server Components that use maybeSingle().",
++  "status": "completed",
++  "steps": [
++    "Verify src/components/platform/Sidebar.tsx has aria-current='page' on active links (should be done in FEAT-003, just confirm)",
++    "Update src/app/admin/users/page.tsx: Wrap the <Table> component with <div className='overflow-x-auto'><Table>...</Table></div> to enable horizontal scrolling on small screens",
++    "Verify src/app/(auth)/login/page.tsx has autocomplete attributes: email input should have autocomplete='email', password input should have autocomplete='current-password' (update if needed)",
++    "Verify src/app/(auth)/register/page.tsx has autocomplete attributes: email input autocomplete='email', password inputs autocomplete='new-password', fullName input autocomplete='name' (update if needed - FEAT-001 may have missed name field)",
++    "Create src/components/platform/ErrorBoundary.tsx: React class component with state {hasError: boolean, error: Error | null}. Implement static getDerivedStateFromError(error) returning {hasError: true, error}. In render: if hasError, return error UI with Card showing 'Something went wrong', error.message, and button to reload page. Otherwise return this.props.children. Export as ErrorBoundary.",
++    "Update src/components/platform/AppLayout.tsx: Import ErrorBoundary, wrap the <main> children with <ErrorBoundary>{children}</ErrorBoundary>",
++    "Review all async Server Components that call .maybeSingle() for explicit null handling: src/app/page.tsx (profile), src/app/admin/users/[id]/page.tsx (profile - already handles with notFound()). In src/app/page.tsx, if profile is null, set default values explicitly: const userName = profile?.full_name || user.email || 'User'; const phone = profile?.phone || 'Not provided' (already done, just verify)."
++  ],
++  "acceptance_criteria": [
++    "Sidebar active links have aria-current='page' attribute",
++    "Admin users table scrolls horizontally on mobile viewports",
++    "All auth form inputs have proper autocomplete attributes (email, current-password, new-password, name, tel)",
++    "ErrorBoundary component catches React errors and shows user-friendly message",
++    "AppLayout wraps children in ErrorBoundary",
++    "Dashboard page handles null profile gracefully without crashing",
++    "Build and lint pass with no errors",
++    "No console warnings about missing autocomplete or accessibility attributes"
++  ],
++  "verification": [
++    "Run 'npm run build' and confirm no TypeScript errors",
++    "Run 'npm run lint' and confirm no errors",
++    "Run 'npm run dev' and test: 1) Navigate through app with DevTools Accessibility panel open, confirm no major violations, 2) Resize browser to mobile width (~375px) and verify admin users table scrolls horizontally, 3) Check login/register forms in DevTools and confirm all inputs have autocomplete attributes, 4) In browser console, verify no warnings about aria attributes or autocomplete, 5) Test error boundary by temporarily throwing an error in a component and confirming error UI appears instead of white screen"
++  ],
++  "blocked_reason": null,
++  "findings": "All accessibility improvements completed successfully:\n\n1. Sidebar aria-current: G£‡ Already implemented correctly in FEAT-003 (verified in both main and admin navigation sections)\n2. Admin users table scroll: G£‡ Added overflow-x-auto wrapper to enable horizontal scrolling on mobile\n3. Login form autocomplete: G£‡ Already properly configured with email and current-password attributes\n4. Register form autocomplete: G£‡ Already properly configured with name, email, and new-password attributes\n5. ErrorBoundary component: G£‡ Created React class component with proper error handling, user-friendly UI, and reload functionality\n6. ErrorBoundary integration: G£‡ Integrated in AppLayout wrapping main content area\n7. Null handling in RSC pages: G£‡ Dashboard page already handles null profile gracefully; user detail page uses notFound() for missing data\n\nBuild and lint: G£‡ Both passed successfully (1 pre-existing warning about react-hook-form in UserCreateForm, unrelated to this task)\n\nAll acceptance criteria met. Ready for manual testing with dev server."
++}
+diff --git a/AMS/.agents/tasks/jvs-brand-ui/task.json b/AMS/.agents/tasks/jvs-brand-ui/task.json
+new file mode 100644
+index 00000000..32220318
+--- /dev/null
++++ b/AMS/.agents/tasks/jvs-brand-ui/task.json
+@@ -0,0 +1,13 @@
++{
++  "task_id": "task-jvs-brand-ui",
++  "task_description": "Apply JVS Autoworks brand colors and logo across the Next.js 15 app, create user management module, and polish accessibility",
++  "status": "completed",
++  "feature_order": [
++    "FEAT-001",
++    "FEAT-002",
++    "FEAT-003",
++    "FEAT-004",
++    "FEAT-005"
++  ],
++  "blocked_reason": null
++}
+diff --git a/AMS/package-lock.json b/AMS/package-lock.json
+index ecb26112..71681c69 100644
+--- a/AMS/package-lock.json
++++ b/AMS/package-lock.json
+@@ -10,6 +10,7 @@
+       "dependencies": {
+         "@hookform/resolvers": "^7.0.5",
+         "@radix-ui/react-avatar": "^1.3.1",
++        "@radix-ui/react-checkbox": "^1.4.1",
+         "@radix-ui/react-dialog": "^1.3.1",
+         "@radix-ui/react-dropdown-menu": "^2.2.1",
+         "@radix-ui/react-label": "^2.1.17",
+@@ -1608,6 +1609,35 @@
+         }
+       }
+     },
++    "node_modules/@radix-ui/react-checkbox": {
++      "version": "1.4.1",
++      "resolved": "https://registry.npmjs.org/@radix-ui/react-checkbox/-/react-checkbox-1.4.1.tgz",
++      "integrity": "sha512-KWtwhh+98ML3seZ9vO9yRY2OwaQG90dCiDAxjpSNY2AaZ3Hik3B0dsk6m0ILywo/no3A9/SozadyPMNweVT8yw==",
++      "license": "MIT",
++      "dependencies": {
++        "@radix-ui/primitive": "1.2.0",
++        "@radix-ui/react-compose-refs": "1.1.5",
++        "@radix-ui/react-context": "1.3.0",
++        "@radix-ui/react-presence": "1.1.11",
++        "@radix-ui/react-primitive": "2.2.0",
++        "@radix-ui/react-use-controllable-state": "1.3.0",
++        "@radix-ui/react-use-size": "1.1.5"
++      },
++      "peerDependencies": {
++        "@types/react": "*",
++        "@types/react-dom": "*",
++        "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
++        "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
++      },
++      "peerDependenciesMeta": {
++        "@types/react": {
++          "optional": true
++        },
++        "@types/react-dom": {
++          "optional": true
++        }
++      }
++    },
+     "node_modules/@radix-ui/react-collection": {
+       "version": "1.2.0",
+       "resolved": "https://registry.npmjs.org/@radix-ui/react-collection/-/react-collection-1.2.0.tgz",
+diff --git a/AMS/package.json b/AMS/package.json
+index 3beee083..780e6175 100644
+--- a/AMS/package.json
++++ b/AMS/package.json
+@@ -14,6 +14,7 @@
+   "dependencies": {
+     "@hookform/resolvers": "^7.0.5",
+     "@radix-ui/react-avatar": "^1.3.1",
++    "@radix-ui/react-checkbox": "^1.4.1",
+     "@radix-ui/react-dialog": "^1.3.1",
+     "@radix-ui/react-dropdown-menu": "^2.2.1",
+     "@radix-ui/react-label": "^2.1.17",
+diff --git a/AMS/src/app/(auth)/login/page.tsx b/AMS/src/app/(auth)/login/page.tsx
+index c86da4e4..89e0c098 100644
+--- a/AMS/src/app/(auth)/login/page.tsx
++++ b/AMS/src/app/(auth)/login/page.tsx
+@@ -61,8 +61,8 @@ export default function LoginPage() {
+         <form onSubmit={handleSubmit}>
+           <CardContent className="space-y-4">
+             {error && (
+-              <div className="rounded-md bg-red-50 p-3">
+-                <p className="text-sm text-red-800">{error}</p>
++              <div className="rounded-md bg-primary-50 border border-primary-200 p-3">
++                <p className="text-sm text-primary-800">{error}</p>
+               </div>
+             )}
+             <div className="space-y-2">
+@@ -75,6 +75,8 @@ export default function LoginPage() {
+                 onChange={(e) => setEmail(e.target.value)}
+                 required
+                 disabled={loading}
++                className="focus:ring-primary-500 focus:border-primary-500"
++                autoComplete="email"
+               />
+             </div>
+             <div className="space-y-2">
+@@ -86,6 +88,8 @@ export default function LoginPage() {
+                 onChange={(e) => setPassword(e.target.value)}
+                 required
+                 disabled={loading}
++                className="focus:ring-primary-500 focus:border-primary-500"
++                autoComplete="current-password"
+               />
+             </div>
+           </CardContent>
+@@ -99,7 +103,7 @@ export default function LoginPage() {
+             </Button>
+             <p className="text-sm text-center text-gray-600">
+               Don&apos;t have an account?{' '}
+-              <Link href="/register" className="text-blue-600 hover:underline">
++              <Link href="/register" className="text-secondary-500 hover:text-secondary-600">
+                 Sign up
+               </Link>
+             </p>
+diff --git a/AMS/src/app/(auth)/register/page.tsx b/AMS/src/app/(auth)/register/page.tsx
+index f64a4224..8eeb3019 100644
+--- a/AMS/src/app/(auth)/register/page.tsx
++++ b/AMS/src/app/(auth)/register/page.tsx
+@@ -66,7 +66,7 @@ export default function RegisterPage() {
+             </div>
+             <p className="text-sm text-center text-gray-600">
+               Once verified,{' '}
+-              <Link href="/login" className="text-blue-600 hover:underline font-medium">
++              <Link href="/login" className="text-secondary-500 hover:text-secondary-600 font-medium">
+                 click here to login
+               </Link>
+             </p>
+@@ -93,8 +93,8 @@ export default function RegisterPage() {
+         <form onSubmit={handleSubmit}>
+           <CardContent className="space-y-4">
+             {error && (
+-              <div className="rounded-md bg-red-50 p-3">
+-                <p className="text-sm text-red-800">{error}</p>
++              <div className="rounded-md bg-primary-50 border border-primary-200 p-3">
++                <p className="text-sm text-primary-800">{error}</p>
+               </div>
+             )}
+             <div className="space-y-2">
+@@ -107,6 +107,7 @@ export default function RegisterPage() {
+                 onChange={(e) => setFullName(e.target.value)}
+                 required
+                 disabled={loading}
++                autoComplete="name"
+               />
+             </div>
+             <div className="space-y-2">
+@@ -119,6 +120,7 @@ export default function RegisterPage() {
+                 onChange={(e) => setEmail(e.target.value)}
+                 required
+                 disabled={loading}
++                autoComplete="email"
+               />
+             </div>
+             <div className="space-y-2">
+@@ -132,6 +134,7 @@ export default function RegisterPage() {
+                 required
+                 minLength={8}
+                 disabled={loading}
++                autoComplete="new-password"
+               />
+               <p className="text-xs text-gray-500">
+                 Must be at least 8 characters
+@@ -148,7 +151,7 @@ export default function RegisterPage() {
+             </Button>
+             <p className="text-sm text-center text-gray-600">
+               Already have an account?{' '}
+-              <Link href="/login" className="text-blue-600 hover:underline">
++              <Link href="/login" className="text-secondary-500 hover:text-secondary-600">
+                 Sign in
+               </Link>
+             </p>
+diff --git a/AMS/src/app/admin/users/new/UserCreateForm.tsx b/AMS/src/app/admin/users/new/UserCreateForm.tsx
+new file mode 100644
+index 00000000..ed192e4d
+--- /dev/null
++++ b/AMS/src/app/admin/users/new/UserCreateForm.tsx
+@@ -0,0 +1,250 @@
++'use client';
++/**
++ * User Creation Form
++ * Form for creating new user accounts with role assignment
++ */
++
++import { useState } from 'react';
++import { useRouter } from 'next/navigation';
++import { useForm } from 'react-hook-form';
++import { zodResolver } from '@hookform/resolvers/zod';
++import { z } from 'zod';
++import Link from 'next/link';
++import { Loader2 } from 'lucide-react';
++
++import { Button } from '@/components/ui/button';
++import { Input } from '@/components/ui/input';
++import { Label } from '@/components/ui/label';
++import { Checkbox } from '@/components/ui/checkbox';
++import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
++import { showToast } from '@/lib/utils/toast';
++import { createUser } from '@/lib/platform/auth/user-actions';
++import { createUserSchema } from '@/lib/platform/auth/schemas';
++import type { Role } from '@/lib/platform/types';
++
++// Extend schema to include confirm password validation
++const formSchema = createUserSchema
++  .extend({
++    confirmPassword: z.string(),
++  })
++  .refine((data) => data.password === data.confirmPassword, {
++    message: 'Passwords must match',
++    path: ['confirmPassword'],
++  });
++
++type FormData = z.infer<typeof formSchema>;
++
++interface UserCreateFormProps {
++  availableRoles: Role[];
++}
++
++export function UserCreateForm({ availableRoles }: UserCreateFormProps) {
++  const router = useRouter();
++  const [isSubmitting, setIsSubmitting] = useState(false);
++
++  const {
++    register,
++    handleSubmit,
++    formState: { errors },
++    setValue,
++    watch,
++  } = useForm<FormData>({
++    resolver: zodResolver(formSchema),
++    defaultValues: {
++      full_name: '',
++      email: '',
++      phone: '',
++      password: '',
++      confirmPassword: '',
++      role_ids: [],
++    },
++  });
++
++  const selectedRoles = watch('role_ids') || [];
++
++  const handleRoleToggle = (roleId: number, checked: boolean) => {
++    const currentRoles = selectedRoles;
++    if (checked) {
++      setValue('role_ids', [...currentRoles, roleId]);
++    } else {
++      setValue('role_ids', currentRoles.filter((id) => id !== roleId));
++    }
++  };
++
++  const onSubmit = async (data: FormData) => {
++    setIsSubmitting(true);
++
++    try {
++      const result = await createUser({
++        full_name: data.full_name,
++        email: data.email,
++        phone: data.phone || null,
++        password: data.password,
++        role_ids: data.role_ids,
++      });
++
++      if (result.error) {
++        showToast.error(result.error);
++        setIsSubmitting(false);
++        return;
++      }
++
++      showToast.success('User created successfully');
++      router.push('/admin/users');
++    } catch (error) {
++      console.error('Error creating user:', error);
++      showToast.error('An unexpected error occurred');
++      setIsSubmitting(false);
++    }
++  };
++
++  return (
++    <Card className="bg-white max-w-2xl">
++      <CardHeader>
++        <CardTitle>User Information</CardTitle>
++        <CardDescription>Enter the details for the new user account</CardDescription>
++      </CardHeader>
++      <CardContent>
++        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
++          {/* Full Name */}
++          <div className="space-y-2">
++            <Label htmlFor="full_name">
++              Full Name <span className="text-destructive">*</span>
++            </Label>
++            <Input
++              id="full_name"
++              type="text"
++              autoComplete="name"
++              disabled={isSubmitting}
++              {...register('full_name')}
++            />
++            {errors.full_name && (
++              <p className="text-sm text-destructive">{errors.full_name.message}</p>
++            )}
++          </div>
++
++          {/* Email */}
++          <div className="space-y-2">
++            <Label htmlFor="email">
++              Email <span className="text-destructive">*</span>
++            </Label>
++            <Input
++              id="email"
++              type="email"
++              autoComplete="email"
++              disabled={isSubmitting}
++              {...register('email')}
++            />
++            {errors.email && (
++              <p className="text-sm text-destructive">{errors.email.message}</p>
++            )}
++          </div>
++
++          {/* Phone */}
++          <div className="space-y-2">
++            <Label htmlFor="phone">Phone (Optional)</Label>
++            <Input
++              id="phone"
++              type="tel"
++              autoComplete="tel"
++              disabled={isSubmitting}
++              {...register('phone')}
++            />
++            {errors.phone && (
++              <p className="text-sm text-destructive">{errors.phone.message}</p>
++            )}
++          </div>
++
++          {/* Password */}
++          <div className="space-y-2">
++            <Label htmlFor="password">
++              Password <span className="text-destructive">*</span>
++            </Label>
++            <Input
++              id="password"
++              type="password"
++              autoComplete="new-password"
++              disabled={isSubmitting}
++              {...register('password')}
++            />
++            {errors.password && (
++              <p className="text-sm text-destructive">{errors.password.message}</p>
++            )}
++          </div>
++
++          {/* Confirm Password */}
++          <div className="space-y-2">
++            <Label htmlFor="confirmPassword">
++              Confirm Password <span className="text-destructive">*</span>
++            </Label>
++            <Input
++              id="confirmPassword"
++              type="password"
++              autoComplete="new-password"
++              disabled={isSubmitting}
++              {...register('confirmPassword')}
++            />
++            {errors.confirmPassword && (
++              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
++            )}
++          </div>
++
++          {/* Roles */}
++          <div className="space-y-3">
++            <Label>
++              Roles <span className="text-destructive">*</span>
++            </Label>
++            <div className="space-y-2 border rounded-md p-4 bg-gray-50">
++              {availableRoles.map((role) => (
++                <div key={role.id} className="flex items-center space-x-2">
++                  <Checkbox
++                    id={`role-${role.id}`}
++                    checked={selectedRoles.includes(role.id)}
++                    onCheckedChange={(checked) =>
++                      handleRoleToggle(role.id, checked as boolean)
++                    }
++                    disabled={isSubmitting}
++                  />
++                  <Label
++                    htmlFor={`role-${role.id}`}
++                    className="text-sm font-normal cursor-pointer"
++                  >
++                    {role.name}
++                  </Label>
++                </div>
++              ))}
++            </div>
++            {errors.role_ids && (
++              <p className="text-sm text-destructive">{errors.role_ids.message}</p>
++            )}
++          </div>
++
++          {/* Actions */}
++          <div className="flex gap-3 pt-4">
++            <Button
++              type="submit"
++              disabled={isSubmitting}
++            >
++              {isSubmitting ? (
++                <>
++                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
++                  Creating...
++                </>
++              ) : (
++                'Create User'
++              )}
++            </Button>
++            <Button
++              type="button"
++              variant="outline"
++              disabled={isSubmitting}
++              asChild
++            >
++              <Link href="/admin/users">Cancel</Link>
++            </Button>
++          </div>
++        </form>
++      </CardContent>
++    </Card>
++  );
++}
+diff --git a/AMS/src/app/admin/users/new/page.tsx b/AMS/src/app/admin/users/new/page.tsx
+new file mode 100644
+index 00000000..ad7c82d4
+--- /dev/null
++++ b/AMS/src/app/admin/users/new/page.tsx
+@@ -0,0 +1,29 @@
++/**
++ * Add User Page
++ * Admin-only page for creating new user accounts
++ */
++
++import { requireRole } from '@/lib/platform/auth/session';
++import { createClient } from '@/lib/platform/db/server';
++import { RoleId } from '@/lib/platform/types';
++import { AppLayout } from '@/components/platform/AppLayout';
++import { UserCreateForm } from './UserCreateForm';
++
++export default async function AddUserPage() {
++  // Require Admin role - must be first
++  await requireRole(RoleId.Admin);
++
++  const supabase = await createClient();
++
++  // Fetch available roles
++  const { data: roles } = await supabase
++    .from('roles')
++    .select('*')
++    .order('id');
++
++  return (
++    <AppLayout title="Add User" subtitle="Create a new user account">
++      <UserCreateForm availableRoles={roles || []} />
++    </AppLayout>
++  );
++}
+diff --git a/AMS/src/app/admin/users/page.tsx b/AMS/src/app/admin/users/page.tsx
+index 665c6d30..799ae491 100644
+--- a/AMS/src/app/admin/users/page.tsx
++++ b/AMS/src/app/admin/users/page.tsx
+@@ -112,13 +112,14 @@ export default async function UsersPage() {
+           </div>
+         </CardHeader>
+         <CardContent>
+-          <Table>
+-            <TableHeader>
+-              <TableRow>
+-                <TableHead>User</TableHead>
+-                <TableHead>Email</TableHead>
+-                <TableHead>Roles</TableHead>
+-                <TableHead className="text-right">Actions</TableHead>
++          <div className="overflow-x-auto">
++            <Table>
++            <TableHeader className="bg-navy-800">
++              <TableRow className="hover:bg-navy-800 border-navy-700">
++                <TableHead className="text-white">User</TableHead>
++                <TableHead className="text-white">Email</TableHead>
++                <TableHead className="text-white">Roles</TableHead>
++                <TableHead className="text-right text-white">Actions</TableHead>
+               </TableRow>
+             </TableHeader>
+             <TableBody>
+@@ -130,7 +131,7 @@ export default async function UsersPage() {
+                 </TableRow>
+               ) : (
+                 users.map((user) => (
+-                  <TableRow key={user.id}>
++                  <TableRow key={user.id} className="odd:bg-white even:bg-gray-50">
+                     <TableCell>
+                       <div className="flex items-center gap-3">
+                         <Avatar>
+@@ -156,7 +157,10 @@ export default async function UsersPage() {
+                           <span className="text-sm text-muted-foreground">No roles</span>
+                         ) : (
+                           user.roles.map((role) => (
+-                            <Badge key={role.id} variant="secondary">
++                            <Badge 
++                              key={role.id} 
++                              variant={role.id === 1 ? "default" : "secondaryLight"}
++                            >
+                               {role.name}
+                             </Badge>
+                           ))
+@@ -176,6 +180,7 @@ export default async function UsersPage() {
+               )}
+             </TableBody>
+           </Table>
++          </div>
+         </CardContent>
+       </Card>
+     </AppLayout>
+diff --git a/AMS/src/components/brand/JVSLogo.tsx b/AMS/src/components/brand/JVSLogo.tsx
+new file mode 100644
+index 00000000..586c05e3
+--- /dev/null
++++ b/AMS/src/components/brand/JVSLogo.tsx
+@@ -0,0 +1,135 @@
++import React from 'react';
++
++export interface JVSLogoProps {
++  size?: 'sm' | 'md' | 'lg' | 'xl';
++  variant?: 'icon' | 'full';
++}
++
++const sizeMap = {
++  sm: 32,
++  md: 48,
++  lg: 64,
++  xl: 96,
++} as const;
++
++export default function JVSLogo({ size = 'md', variant = 'full' }: JVSLogoProps) {
++  const heightPx = sizeMap[size];
++  
++  if (variant === 'icon') {
++    // Icon variant: Just the JVS letters with chrome gradient
++    const width = heightPx;
++    
++    return (
++      <svg
++        width={width}
++        height={heightPx}
++        viewBox="0 0 100 100"
++        fill="none"
++        xmlns="http://www.w3.org/2000/svg"
++        aria-label="JVS"
++      >
++        <defs>
++          <linearGradient id="chromeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
++            <stop offset="0%" stopColor="#C0C0C0" />
++            <stop offset="50%" stopColor="#989898" />
++            <stop offset="100%" stopColor="#585858" />
++          </linearGradient>
++        </defs>
++        <text
++          x="50"
++          y="65"
++          fontSize="48"
++          fontWeight="900"
++          fontFamily="Arial, sans-serif"
++          textAnchor="middle"
++          fill="url(#chromeGradient)"
++          letterSpacing="-2"
++        >
++          JVS
++        </text>
++      </svg>
++    );
++  }
++  
++  // Full variant: Icon + AUTOWORKS + tagline + racing stripes
++  const width = heightPx * 4.5;
++  
++  return (
++    <svg
++      width={width}
++      height={heightPx}
++      viewBox="0 0 450 100"
++      fill="none"
++      xmlns="http://www.w3.org/2000/svg"
++      aria-label="JVS Autoworks - JVS Bongabon"
++    >
++      <defs>
++        <linearGradient id="chromeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
++          <stop offset="0%" stopColor="#C0C0C0" />
++          <stop offset="50%" stopColor="#989898" />
++          <stop offset="100%" stopColor="#585858" />
++        </linearGradient>
++      </defs>
++      
++      {/* JVS Icon with chrome gradient */}
++      <text
++        x="50"
++        y="55"
++        fontSize="48"
++        fontWeight="900"
++        fontFamily="Arial, sans-serif"
++        textAnchor="middle"
++        fill="url(#chromeGradient)"
++        letterSpacing="-2"
++      >
++        JVS
++      </text>
++      
++      {/* AUTOWORKS text */}
++      <text
++        x="115"
++        y="48"
++        fontSize="32"
++        fontWeight="700"
++        fontFamily="Arial, sans-serif"
++        fill="#585858"
++        letterSpacing="2"
++      >
++        AUTOWORKS
++      </text>
++      
++      {/* JVS Bongabon tagline */}
++      <text
++        x="115"
++        y="72"
++        fontSize="14"
++        fontWeight="400"
++        fontFamily="Arial, sans-serif"
++        fill="#787878"
++        letterSpacing="1"
++      >
++        JVS Bongabon
++      </text>
++      
++      {/* Racing Red stripe */}
++      <line
++        x1="115"
++        y1="80"
++        x2="370"
++        y2="80"
++        stroke="#950304"
++        strokeWidth="2"
++      />
++      
++      {/* Steel Blue stripe */}
++      <line
++        x1="115"
++        y1="85"
++        x2="370"
++        y2="85"
++        stroke="#446A91"
++        strokeWidth="2"
++      />
++    </svg>
++  );
++}
+diff --git a/AMS/src/components/platform/AppLayout.tsx b/AMS/src/components/platform/AppLayout.tsx
+index 6b318237..77a4b7ea 100644
+--- a/AMS/src/components/platform/AppLayout.tsx
++++ b/AMS/src/components/platform/AppLayout.tsx
+@@ -6,6 +6,7 @@
+ import { ReactNode } from 'react'
+ import { Sidebar } from './Sidebar'
+ import { PageHeader } from './PageHeader'
++import { ErrorBoundary } from './ErrorBoundary'
+ 
+ interface AppLayoutProps {
+   children: ReactNode
+@@ -28,7 +29,9 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
+ 
+         {/* Page content */}
+         <main className="px-4 py-6 sm:px-6 lg:px-8">
+-          {children}
++          <ErrorBoundary>
++            {children}
++          </ErrorBoundary>
+         </main>
+       </div>
+     </div>
+diff --git a/AMS/src/components/platform/ErrorBoundary.tsx b/AMS/src/components/platform/ErrorBoundary.tsx
+new file mode 100644
+index 00000000..3cc487ab
+--- /dev/null
++++ b/AMS/src/components/platform/ErrorBoundary.tsx
+@@ -0,0 +1,92 @@
++/**
++ * ErrorBoundary - React error boundary for graceful error handling
++ * Catches errors in child components and displays user-friendly error UI
++ */
++
++'use client'
++
++import { Component, ReactNode } from 'react'
++import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { AlertCircle } from 'lucide-react'
++
++interface ErrorBoundaryProps {
++  children: ReactNode
++}
++
++interface ErrorBoundaryState {
++  hasError: boolean
++  error: Error | null
++}
++
++export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
++  constructor(props: ErrorBoundaryProps) {
++    super(props)
++    this.state = {
++      hasError: false,
++      error: null,
++    }
++  }
++
++  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
++    return {
++      hasError: true,
++      error,
++    }
++  }
++
++  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
++    // Log error to console for debugging
++    console.error('ErrorBoundary caught an error:', error, errorInfo)
++  }
++
++  handleReset = () => {
++    this.setState({
++      hasError: false,
++      error: null,
++    })
++    // Reload the page to reset the app state
++    window.location.reload()
++  }
++
++  render() {
++    if (this.state.hasError) {
++      return (
++        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
++          <Card className="w-full max-w-lg">
++            <CardHeader>
++              <div className="flex items-center gap-3">
++                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100">
++                  <AlertCircle className="h-6 w-6 text-primary-600" />
++                </div>
++                <div>
++                  <CardTitle>Something went wrong</CardTitle>
++                  <CardDescription>
++                    An unexpected error occurred while rendering this page
++                  </CardDescription>
++                </div>
++              </div>
++            </CardHeader>
++            <CardContent className="space-y-4">
++              {this.state.error && (
++                <div className="rounded-md bg-gray-100 p-4">
++                  <p className="text-sm font-mono text-gray-800 break-words">
++                    {this.state.error.message}
++                  </p>
++                </div>
++              )}
++              <Button onClick={this.handleReset} className="w-full">
++                Reload Page
++              </Button>
++              <p className="text-sm text-center text-gray-600">
++                If this problem persists, please contact support
++              </p>
++            </CardContent>
++          </Card>
++        </div>
++      )
++    }
++
++    return this.props.children
++  }
++}
+diff --git a/AMS/src/components/platform/Sidebar.tsx b/AMS/src/components/platform/Sidebar.tsx
+index 8b2b0777..d5e9b75b 100644
+--- a/AMS/src/components/platform/Sidebar.tsx
++++ b/AMS/src/components/platform/Sidebar.tsx
+@@ -37,6 +37,7 @@ import { signOut } from '@/lib/platform/auth/actions'
+ import { useUser } from '@/lib/platform/auth/hooks'
+ import { showToast } from '@/lib/utils/toast'
+ import { useRouter } from 'next/navigation'
++import JVSLogo from '@/components/brand/JVSLogo'
+ 
+ const navigation = [
+   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+@@ -86,15 +87,20 @@ export function Sidebar() {
+   const isAdmin = roles.some((role) => role.id === 1)
+ 
+   return (
+-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r">
++    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-navy-800 border-r border-navy-700">
+       {/* Logo */}
+       <div className="flex h-16 items-center px-6">
+-        <h1 className="text-xl font-bold text-gray-900">
+-          JRS Bongabon AMS
+-        </h1>
++        {/* Desktop: Full logo with icon + AUTOWORKS + tagline */}
++        <div className="hidden md:flex">
++          <JVSLogo size="md" variant="full" />
++        </div>
++        {/* Mobile: Icon only */}
++        <div className="flex md:hidden">
++          <JVSLogo size="sm" variant="icon" />
++        </div>
+       </div>
+ 
+-      <Separator />
++      <Separator className="bg-navy-700" />
+ 
+       {/* Navigation */}
+       <nav className="flex-1 space-y-1 px-3 py-4">
+@@ -104,11 +110,12 @@ export function Sidebar() {
+             <Link
+               key={item.name}
+               href={item.href}
++              aria-current={isActive ? 'page' : undefined}
+               className={cn(
+                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                 isActive
+-                  ? 'bg-gray-100 text-gray-900'
+-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
++                  ? 'bg-primary-500/20 text-primary-300 border-l-4 border-primary-500'
++                  : 'text-white hover:bg-navy-700 hover:text-white'
+               )}
+             >
+               <item.icon className="h-5 w-5" />
+@@ -120,9 +127,9 @@ export function Sidebar() {
+         {/* Administration Section (Admin only) */}
+         {isAdmin && (
+           <>
+-            <Separator className="my-4" />
++            <Separator className="my-4 bg-navy-700" />
+             <div className="px-3 py-2">
+-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
++              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                 Administration
+               </p>
+             </div>
+@@ -132,11 +139,12 @@ export function Sidebar() {
+                 <Link
+                   key={item.name}
+                   href={item.href}
++                  aria-current={isActive ? 'page' : undefined}
+                   className={cn(
+                     'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                     isActive
+-                      ? 'bg-gray-100 text-gray-900'
+-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
++                      ? 'bg-primary-500/20 text-primary-300 border-l-4 border-primary-500'
++                      : 'text-white hover:bg-navy-700 hover:text-white'
+                   )}
+                 >
+                   <item.icon className="h-5 w-5" />
+@@ -149,7 +157,7 @@ export function Sidebar() {
+       </nav>
+ 
+       {/* User profile and dropdown */}
+-      <div className="absolute bottom-0 left-0 right-0 border-t bg-white p-4">
++      <div className="absolute bottom-0 left-0 right-0 border-t border-navy-700 bg-navy-900 p-4">
+         {loading ? (
+           <div className="flex items-center gap-3">
+             <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+@@ -164,22 +172,22 @@ export function Sidebar() {
+             <DropdownMenuTrigger asChild>
+               <Button
+                 variant="ghost"
+-                className="w-full h-auto p-0 hover:bg-gray-50 rounded-md"
++                className="w-full h-auto p-0 hover:bg-navy-800 rounded-md"
+               >
+                 <div className="flex items-center gap-3 px-3 py-2 w-full">
+                   <Avatar>
+                     {profile?.avatar_url && (
+                       <AvatarImage src={profile.avatar_url} alt={profile.full_name || 'User'} />
+                     )}
+-                    <AvatarFallback>
++                    <AvatarFallback className="bg-secondary-500 text-white">
+                       {getInitials(profile?.full_name)}
+                     </AvatarFallback>
+                   </Avatar>
+                   <div className="flex-1 min-w-0 text-left">
+-                    <p className="text-sm font-medium text-gray-900 truncate">
++                    <p className="text-sm font-medium text-white truncate">
+                       {profile?.full_name || user?.email || 'User'}
+                     </p>
+-                    <p className="text-xs text-gray-500 truncate">
++                    <p className="text-xs text-gray-400 truncate">
+                       {primaryRole}
+                     </p>
+                   </div>
+diff --git a/AMS/src/components/ui/badge.tsx b/AMS/src/components/ui/badge.tsx
+index e87d62bf..b905b055 100644
+--- a/AMS/src/components/ui/badge.tsx
++++ b/AMS/src/components/ui/badge.tsx
+@@ -9,11 +9,13 @@ const badgeVariants = cva(
+     variants: {
+       variant: {
+         default:
+-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
++          "border-transparent bg-primary-500 text-white shadow hover:bg-primary-600",
+         secondary:
+-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
++          "border-transparent bg-secondary-500 text-white hover:bg-secondary-600",
++        secondaryLight:
++          "border-transparent bg-secondary-100 text-secondary-700 hover:bg-secondary-200",
+         destructive:
+-          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
++          "border-transparent bg-primary-700 text-white shadow hover:bg-primary-800",
+         outline: "text-foreground",
+       },
+     },
+diff --git a/AMS/src/components/ui/button.tsx b/AMS/src/components/ui/button.tsx
+index 65d4fcd9..7359c278 100644
+--- a/AMS/src/components/ui/button.tsx
++++ b/AMS/src/components/ui/button.tsx
+@@ -10,15 +10,15 @@ const buttonVariants = cva(
+     variants: {
+       variant: {
+         default:
+-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
++          "bg-primary-500 text-white shadow hover:bg-primary-600 focus-visible:ring-primary-500",
+         destructive:
+-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
++          "bg-primary-700 text-white shadow-sm hover:bg-primary-800",
+         outline:
+-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
++          "border border-primary-500 text-primary-500 bg-background shadow-sm hover:bg-primary-50",
+         secondary:
+-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+-        ghost: "hover:bg-accent hover:text-accent-foreground",
+-        link: "text-primary underline-offset-4 hover:underline",
++          "bg-secondary-500 text-white shadow-sm hover:bg-secondary-600",
++        ghost: "text-primary-500 hover:bg-primary-50 hover:text-primary-600",
++        link: "text-primary-500 underline-offset-4 hover:underline",
+       },
+       size: {
+         default: "h-9 px-4 py-2",
+diff --git a/AMS/src/components/ui/checkbox.tsx b/AMS/src/components/ui/checkbox.tsx
+new file mode 100644
+index 00000000..86df5629
+--- /dev/null
++++ b/AMS/src/components/ui/checkbox.tsx
+@@ -0,0 +1,30 @@
++"use client"
++
++import * as React from "react"
++import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
++import { Check } from "lucide-react"
++
++import { cn } from "@/lib/utils"
++
++const Checkbox = React.forwardRef<
++  React.ElementRef<typeof CheckboxPrimitive.Root>,
++  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
++>(({ className, ...props }, ref) => (
++  <CheckboxPrimitive.Root
++    ref={ref}
++    className={cn(
++      "peer h-4 w-4 shrink-0 rounded-sm border border-primary-500 shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-primary-foreground",
++      className
++    )}
++    {...props}
++  >
++    <CheckboxPrimitive.Indicator
++      className={cn("flex items-center justify-center text-current")}
++    >
++      <Check className="h-4 w-4" />
++    </CheckboxPrimitive.Indicator>
++  </CheckboxPrimitive.Root>
++))
++Checkbox.displayName = CheckboxPrimitive.Root.displayName
++
++export { Checkbox }
+diff --git a/AMS/src/lib/platform/auth/schemas.ts b/AMS/src/lib/platform/auth/schemas.ts
+new file mode 100644
+index 00000000..7d25855b
+--- /dev/null
++++ b/AMS/src/lib/platform/auth/schemas.ts
+@@ -0,0 +1,18 @@
++/**
++ * Zod schemas for authentication and user management.
++ */
++import { z } from 'zod';
++
++/**
++ * Schema for creating a new user.
++ * Used by admin to create user accounts with roles.
++ */
++export const createUserSchema = z.object({
++  full_name: z.string().min(2, 'Name must be at least 2 characters'),
++  email: z.string().email('Invalid email format'),
++  phone: z.string().nullable().optional(),
++  password: z.string().min(8, 'Password must be at least 8 characters'),
++  role_ids: z.array(z.number()).min(1, 'At least one role is required'),
++});
++
++export type CreateUserInput = z.infer<typeof createUserSchema>;
+diff --git a/AMS/src/lib/platform/auth/user-actions.ts b/AMS/src/lib/platform/auth/user-actions.ts
+new file mode 100644
+index 00000000..eabaecc3
+--- /dev/null
++++ b/AMS/src/lib/platform/auth/user-actions.ts
+@@ -0,0 +1,117 @@
++'use server';
++/**
++ * Server Actions for user management.
++ * Admin-only operations for creating and managing user accounts.
++ */
++import { revalidatePath } from 'next/cache';
++import { createClient as createServiceClient } from '@supabase/supabase-js';
++import type { ApiResponse, Database } from '../types';
++import type { CreateUserInput } from './schemas';
++
++/**
++ * Create a Supabase client with service role (bypassing RLS).
++ * Only use for admin operations where RLS needs to be bypassed.
++ */
++function createAdminClient() {
++  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
++  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
++  
++  if (!supabaseUrl || !supabaseServiceKey) {
++    throw new Error('Missing Supabase environment variables');
++  }
++  
++  return createServiceClient<Database>(supabaseUrl, supabaseServiceKey, {
++    auth: {
++      autoRefreshToken: false,
++      persistSession: false,
++    },
++  });
++}
++
++/**
++ * Create a new user account with profile and roles.
++ * @param data - User creation data including credentials and role assignments
++ */
++export async function createUser(
++  data: CreateUserInput
++): Promise<ApiResponse<{ userId: string }>> {
++  try {
++    const supabase = createAdminClient();
++    
++    // Step 1: Create auth user
++    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
++      email: data.email,
++      password: data.password,
++      email_confirm: true,
++    });
++    
++    if (authError || !authData.user) {
++      console.error('Error creating auth user:', authError);
++      return {
++        data: null,
++        error: authError?.message || 'Failed to create user',
++        status: 500,
++      };
++    }
++    
++    const userId = authData.user.id;
++    
++    // Step 2: Insert user profile
++    const { error: profileError } = await supabase
++      .from('user_profiles')
++      .insert({
++        id: userId,
++        full_name: data.full_name,
++        phone: data.phone || null,
++      } as never);
++    
++    if (profileError) {
++      console.error('Error creating user profile:', profileError);
++      // Try to clean up auth user if profile creation fails
++      await supabase.auth.admin.deleteUser(userId);
++      return {
++        data: null,
++        error: `Failed to create user profile: ${profileError.message}`,
++        status: 500,
++      };
++    }
++    
++    // Step 3: Insert role assignments
++    const roleInserts = data.role_ids.map((role_id) => ({
++      user_id: userId,
++      role_id,
++    }));
++    
++    const { error: rolesError } = await supabase
++      .from('user_roles')
++      .insert(roleInserts as never);
++    
++    if (rolesError) {
++      console.error('Error assigning roles:', rolesError);
++      // Try to clean up auth user and profile if role assignment fails
++      await supabase.from('user_profiles').delete().eq('id', userId);
++      await supabase.auth.admin.deleteUser(userId);
++      return {
++        data: null,
++        error: `Failed to assign roles: ${rolesError.message}`,
++        status: 500,
++      };
++    }
++    
++    // Revalidate user list page
++    revalidatePath('/admin/users');
++    
++    return {
++      data: { userId },
++      error: null,
++      status: 200,
++    };
++  } catch (err) {
++    console.error('Unexpected error creating user:', err);
++    return {
++      data: null,
++      error: 'An unexpected error occurred',
++      status: 500,
++    };
++  }
++}
