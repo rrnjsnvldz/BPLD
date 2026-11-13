@@ -113,12 +113,12 @@ export default async function UsersPage() {
         </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Roles</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+            <TableHeader className="bg-navy-800">
+              <TableRow className="hover:bg-navy-800 border-navy-700">
+                <TableHead className="text-white">User</TableHead>
+                <TableHead className="text-white">Email</TableHead>
+                <TableHead className="text-white">Roles</TableHead>
+                <TableHead className="text-right text-white">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -130,7 +130,7 @@ export default async function UsersPage() {
                 </TableRow>
               ) : (
                 users.map((user) => (
-                  <TableRow key={user.id}>
+                  <TableRow key={user.id} className="odd:bg-white even:bg-gray-50">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar>
@@ -156,7 +156,11 @@ export default async function UsersPage() {
                           <span className="text-sm text-muted-foreground">No roles</span>
                         ) : (
                           user.roles.map((role) => (
-                            <Badge key={role.id} variant="secondary">
+                            <Badge 
+                              key={role.id} 
+                              variant={role.id === 1 ? "default" : "secondary"}
+                              className={role.id === 1 ? "bg-primary-500 text-white hover:bg-primary-600" : "bg-secondary-100 text-secondary-700"}
+                            >
                               {role.name}
                             </Badge>
                           ))

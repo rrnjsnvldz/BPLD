@@ -66,7 +66,7 @@ export default function RegisterPage() {
             </div>
             <p className="text-sm text-center text-gray-600">
               Once verified,{' '}
-              <Link href="/login" className="text-blue-600 hover:underline font-medium">
+              <Link href="/login" className="text-secondary-500 hover:text-secondary-600 font-medium">
                 click here to login
               </Link>
             </p>
@@ -93,8 +93,8 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-red-50 p-3">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="rounded-md bg-primary-50 border border-primary-200 p-3">
+                <p className="text-sm text-primary-800">{error}</p>
               </div>
             )}
             <div className="space-y-2">
@@ -107,6 +107,7 @@ export default function RegisterPage() {
                 onChange={(e) => setFullName(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="name"
               />
             </div>
             <div className="space-y-2">
@@ -119,6 +120,7 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="email"
               />
             </div>
             <div className="space-y-2">
@@ -132,6 +134,7 @@ export default function RegisterPage() {
                 required
                 minLength={8}
                 disabled={loading}
+                autoComplete="new-password"
               />
               <p className="text-xs text-gray-500">
                 Must be at least 8 characters
@@ -148,7 +151,7 @@ export default function RegisterPage() {
             </Button>
             <p className="text-sm text-center text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 hover:underline">
+              <Link href="/login" className="text-secondary-500 hover:text-secondary-600">
                 Sign in
               </Link>
             </p>

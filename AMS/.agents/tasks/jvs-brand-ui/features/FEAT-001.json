@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Apply JVS Autoworks brand colors to all existing UI components. Replace all gray/blue/red Tailwind classes with the brand palette: primary-* (Racing Red), secondary-* (Steel Blue), navy-* (Navy), gray-* (Chrome/Steel). Update Sidebar (navy-800 bg, white text, primary-500 active, navy-700 hover), Dashboard (gray-50 cards, secondary-500 role badges), Admin Users page (navy-800 table header, primary-500 Admin badge, secondary-100 role badges), Auth pages (gray-50 bg, primary-500 buttons, secondary-500 links, primary-50/800 error box), Button component variants (default→primary-500, secondary→secondary-500, destructive→primary-700, outline→primary-500 border, ghost→primary-500).",
+  "status": "completed",
+  "steps": [
+    "Update src/components/platform/Sidebar.tsx: bg-navy-800 (main bg), text-white (text), active link bg-primary-500/20 text-primary-300 border-l-2 border-primary-500, hover:bg-navy-700 hover:text-white, section labels text-gray-400, bottom user area bg-navy-900 border-t border-navy-700 with name text-white and role text-gray-400, avatar fallback bg-secondary-500 text-white",
+    "Update src/app/page.tsx (Dashboard): Card bg stays default, card content icons text-gray-500, labels text-gray-700, values text-gray-600, role badges use variant='secondary' which will render bg-secondary-500 after button updates, quick stats cards keep default styling (will inherit from Card component)",
+    "Update src/app/admin/users/page.tsx: Table header bg-navy-800 text-white, table rows alternating bg-white/bg-gray-50, role badges for non-admin roles bg-secondary-100 text-secondary-700, Admin role badge bg-primary-500 text-white, View button variant='outline' (will use primary-500 border after button update)",
+    "Update src/app/admin/users/[id]/page.tsx: Keep existing structure, icons text-gray-500, labels text-gray-700, values text-gray-600 (already aligned with brand grays)",
+    "Update src/app/(auth)/login/page.tsx: Container bg-gray-50, card bg-white (default), primary button remove explicit classes (will inherit from Button default variant), links text-secondary-500 hover:text-secondary-600, error box bg-primary-50 border border-primary-200 text-primary-800, input focus rings focus:ring-primary-500 focus:border-primary-500",
+    "Update src/app/(auth)/register/page.tsx: Same pattern as login - bg-gray-50 container, text-secondary-500 links, bg-primary-50 error box (red-50→primary-50), bg-green-50 success box unchanged, primary button uses default variant, email input add autocomplete='email', password inputs add autocomplete='new-password'",
+    "Update src/components/ui/button.tsx buttonVariants: default variant to 'bg-primary-500 text-white shadow hover:bg-primary-600 focus-visible:ring-primary-500', secondary variant to 'bg-secondary-500 text-white shadow-sm hover:bg-secondary-600', destructive to 'bg-primary-700 text-white shadow-sm hover:bg-primary-800', outline to 'border border-primary-500 text-primary-500 bg-background shadow-sm hover:bg-primary-50', ghost to 'text-primary-500 hover:bg-primary-50 hover:text-primary-600'"
+  ],
+  "acceptance_criteria": [
+    "All Sidebar colors match brand: Navy background, white text, Racing Red active state, Steel Blue avatar",
+    "Dashboard role badges use Steel Blue (secondary-500)",
+    "Admin users table has Navy header, Racing Red Admin badges, Steel Blue role badges",
+    "Login and register pages use Racing Red buttons, Steel Blue links, Racing Red error alerts",
+    "Button component default variant is Racing Red, secondary is Steel Blue, destructive is dark red",
+    "No build errors when running npm run build",
+    "No lint errors when running npm run lint"
+  ],
+  "verification": [
+    "Run 'npm run build' and confirm exit code 0 with no TypeScript errors",
+    "Run 'npm run lint' and confirm exit code 0",
+    "Run 'npm run dev' and visually verify at http://localhost:3000: Sidebar is navy with red active link, Dashboard badges are steel blue, Admin Users page has navy header and correct badge colors, Login page has red button and blue links, all buttons across app show correct brand colors"
+  ],
+  "blocked_reason": null,
+  "findings": "All JVS Autoworks brand colors successfully applied. Build and lint passed with no errors. Visual verification requires user to run 'npm run dev' and check: (1) Sidebar with navy background, white text, red active states, and steel blue avatar fallback, (2) Dashboard role badges in steel blue, (3) Admin Users table with navy header, red Admin badges, and steel blue role badges, (4) Login/Register pages with red primary buttons and steel blue links, (5) All button variants using correct brand colors throughout the app."
+}

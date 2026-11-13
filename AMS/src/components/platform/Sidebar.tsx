@@ -86,15 +86,15 @@ export function Sidebar() {
   const isAdmin = roles.some((role) => role.id === 1)
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r">
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-navy-800 border-r border-navy-700">
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
-        <h1 className="text-xl font-bold text-gray-900">
+        <h1 className="text-xl font-bold text-white">
           JRS Bongabon AMS
         </h1>
       </div>
 
-      <Separator />
+      <Separator className="bg-navy-700" />
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -107,8 +107,8 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-primary-500/20 text-primary-300 border-l-2 border-primary-500'
+                  : 'text-white hover:bg-navy-700 hover:text-white'
               )}
             >
               <item.icon className="h-5 w-5" />
@@ -120,9 +120,9 @@ export function Sidebar() {
         {/* Administration Section (Admin only) */}
         {isAdmin && (
           <>
-            <Separator className="my-4" />
+            <Separator className="my-4 bg-navy-700" />
             <div className="px-3 py-2">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Administration
               </p>
             </div>
@@ -135,8 +135,8 @@ export function Sidebar() {
                   className={cn(
                     'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-primary-500/20 text-primary-300 border-l-2 border-primary-500'
+                      : 'text-white hover:bg-navy-700 hover:text-white'
                   )}
                 >
                   <item.icon className="h-5 w-5" />
@@ -149,7 +149,7 @@ export function Sidebar() {
       </nav>
 
       {/* User profile and dropdown */}
-      <div className="absolute bottom-0 left-0 right-0 border-t bg-white p-4">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-navy-700 bg-navy-900 p-4">
         {loading ? (
           <div className="flex items-center gap-3">
             <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
@@ -164,22 +164,22 @@ export function Sidebar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="w-full h-auto p-0 hover:bg-gray-50 rounded-md"
+                className="w-full h-auto p-0 hover:bg-navy-800 rounded-md"
               >
                 <div className="flex items-center gap-3 px-3 py-2 w-full">
                   <Avatar>
                     {profile?.avatar_url && (
                       <AvatarImage src={profile.avatar_url} alt={profile.full_name || 'User'} />
                     )}
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-secondary-500 text-white">
                       {getInitials(profile?.full_name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 text-left">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {profile?.full_name || user?.email || 'User'}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-gray-400 truncate">
                       {primaryRole}
                     </p>
                   </div>

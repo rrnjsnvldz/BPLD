@@ -61,8 +61,8 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-red-50 p-3">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="rounded-md bg-primary-50 border border-primary-200 p-3">
+                <p className="text-sm text-primary-800">{error}</p>
               </div>
             )}
             <div className="space-y-2">
@@ -75,6 +75,8 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                className="focus:ring-primary-500 focus:border-primary-500"
+                autoComplete="email"
               />
             </div>
             <div className="space-y-2">
@@ -86,6 +88,8 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                className="focus:ring-primary-500 focus:border-primary-500"
+                autoComplete="current-password"
               />
             </div>
           </CardContent>
@@ -99,7 +103,7 @@ export default function LoginPage() {
             </Button>
             <p className="text-sm text-center text-gray-600">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-blue-600 hover:underline">
+              <Link href="/register" className="text-secondary-500 hover:text-secondary-600">
                 Sign up
               </Link>
             </p>
